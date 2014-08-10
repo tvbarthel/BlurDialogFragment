@@ -5,6 +5,8 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <suppress files="R.java" checks="[a-zA-Z0-9]*"/>
-    <suppress files="BuildConfig.java" checks="[a-zA-Z0-9]*"/>
+    <suppress files="R.java" checks="[a-zA-Z0-9]*" />
+    <suppress files="BuildConfig.java" checks="[a-zA-Z0-9]*" />
+    <suppress files="FastBlurHelper"
+        checks="InnerAssignmentCheck|MultipleVariableDeclarationsCheck|MethodLengthCheck" />
 </suppressions>
