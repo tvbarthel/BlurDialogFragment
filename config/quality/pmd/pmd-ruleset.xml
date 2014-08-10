@@ -9,7 +9,12 @@
     <exclude-pattern>.*/R.java</exclude-pattern>
     <exclude-pattern>.*/gen/.*</exclude-pattern>
 
-    <rule ref="rulesets/android.xml" />
+    <rule ref="rulesets/android.xml">
+        <!-- Config.LOGD deprecated in API level 4 !-->
+        <exclude name="ProtectLogD" />
+        <!-- Config.LOGV deprecated in API level 4 !-->
+        <exclude name="ProtectLogV" />
+    </rule>
     <rule ref="rulesets/clone.xml" />
     <rule ref="rulesets/finalizers.xml" />
     <rule ref="rulesets/imports.xml" />
