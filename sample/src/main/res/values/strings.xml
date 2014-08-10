@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BlurDialogFragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="blur_button">Blur Dialog</string>
+    <string name="blur_title">Blur Sample</string>
+    <string name="url">http://tvbarthel.github.io/</string>
+    <string name="dialog_fragment_title">Blur Dialog Fragment</string>
+
+</resources>
