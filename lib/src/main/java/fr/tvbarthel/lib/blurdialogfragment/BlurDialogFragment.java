@@ -29,7 +29,7 @@ public class BlurDialogFragment extends DialogFragment {
     /**
      * Log cat
      */
-    private static final String TAG = BlurDialogFragment.class.getName();
+    private static final String TAG = BlurDialogFragment.class.getSimpleName();
 
     /**
      * Since image is going to be blurred, we don't care about resolution.
@@ -61,6 +61,17 @@ public class BlurDialogFragment extends DialogFragment {
      * Used to enable or disable log.
      */
     private boolean mLogEnable = false;
+
+    /**
+     * Factor used to down scale background. High quality isn't necessary
+     * since the background will be blurred.
+     */
+    private float mDownScaleFactor = BLUR_DOWN_SCALE_FACTOR;
+
+    /**
+     * Radius used for fast blur algorithm.
+     */
+    private int mBlurRadius = BLUR_RADIUS;
 
     /**
      * default constructor as needed
@@ -105,6 +116,32 @@ public class BlurDialogFragment extends DialogFragment {
     }
 
     /**
+     * Apply custom down scale factor.
+     * <p/>
+     * By default down scale factor is set to
+     * {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment#BLUR_DOWN_SCALE_FACTOR}
+     * <p/>
+     * Higher down scale factor will increase blurring speed but reduce final rendering quality.
+     *
+     * @param factor customized down scale factor.
+     */
+    public void setDownScaleFactor(float factor) {
+        mDownScaleFactor = factor;
+    }
+
+    /**
+     * Apply custom blur radius.
+     * <p/>
+     * By default blur radius is set to
+     * {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment#BLUR_RADIUS}
+     *
+     * @param radius
+     */
+    public void setBlurRadius(int radius) {
+        mBlurRadius = radius;
+    }
+
+    /**
      * Blur the given bitmap and add it to the activity.
      *
      * @param bkg      should be a bitmap of the background.
@@ -120,54 +157,42 @@ public class BlurDialogFragment extends DialogFragment {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
 
-        //build drawing source boundaries
-        Rect srcRect = new Rect(0, 0, bkg.getWidth(), bkg.getHeight());
-
         //overlay used to build scaled preview and blur background
         Bitmap overlay = null;
 
+        //evaluate top offset
+        int actionBarHeight
+                = ((ActionBarActivity) getActivity()).getSupportActionBar().getHeight();
+        int statusBarHeight = getStatusBarHeight();
+        final int topOffset = actionBarHeight + statusBarHeight;
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            //evaluate top offset
-            int actionBarHeight
-                    = ((ActionBarActivity) getActivity()).getSupportActionBar().getHeight();
-            int statusBarHeight = getStatusBarHeight();
-            final int topOffset = actionBarHeight + statusBarHeight;
+        //add offset to the source boundaries since we don't want to blur actionBar pixels
+        Rect srcRect = new Rect(
+                0,
+                actionBarHeight + statusBarHeight,
+                bkg.getWidth(),
+                bkg.getHeight()
+        );
 
-            //add offset to the source boundaries since we don't want to blur actionBar pixels
-            srcRect = new Rect(
+        //in order to keep the same ratio as the one which will be used for rendering, also
+        //add the offset to the overlay.
+        overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth() / mDownScaleFactor),
+                (int) ((view.getMeasuredHeight() - topOffset) / mDownScaleFactor), Bitmap.Config.RGB_565);
+
+        /**
+         * Padding must be added for rendering on pre HONEYCOMB
+         */
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            //add offset as top margin since actionBar height must also considered when we display
+            // the blurred background. Don't want to draw on the actionBar.
+            mBlurredBackgroundLayoutParams.setMargins(
                     0,
-                    actionBarHeight + statusBarHeight,
-                    bkg.getWidth(),
-                    bkg.getHeight()
+                    actionBarHeight,
+                    0,
+                    0
             );
-
-            //in order to keep the same ratio as the one which will be used for rendering, also
-            //add the offset to the overlay.
-            overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth() / BLUR_DOWN_SCALE_FACTOR),
-                    (int) ((view.getMeasuredHeight() - topOffset) / BLUR_DOWN_SCALE_FACTOR), Bitmap.Config.RGB_565);
-
-            /**
-             * Padding must be added for rendering on pre HONEYCOMB
-             */
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                //add offset as top margin since actionBar height must also considered when we display
-                // the blurred background. Don't want to draw on the actionBar.
-                mBlurredBackgroundLayoutParams.setMargins(
-                        0,
-                        actionBarHeight,
-                        0,
-                        0
-                );
-                mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
-            }
-        } else {
-
-            //create bitmap with same dimension as rootView
-            overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth() / BLUR_DOWN_SCALE_FACTOR),
-                    (int) (view.getMeasuredHeight() / BLUR_DOWN_SCALE_FACTOR), Bitmap.Config.RGB_565);
+            mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
         }
-
 
         //scale and draw background view on the canvas overlay
         Canvas canvas = new Canvas(overlay);
@@ -182,7 +207,7 @@ public class BlurDialogFragment extends DialogFragment {
         canvas.drawBitmap(bkg, srcRect, destRect, paint);
 
         //apply fast blur on overlay
-        overlay = FastBlurHelper.doBlur(overlay, BLUR_RADIUS, false);
+        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
 
         if (mLogEnable) {
             Log.d(TAG, "blurred achieved in : " + (System.currentTimeMillis() - startMs) + "ms");
