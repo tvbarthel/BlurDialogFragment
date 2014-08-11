@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -175,8 +176,9 @@ public class BlurDialogFragment extends DialogFragment {
         Bitmap overlay = null;
 
         //evaluate top offset
-        int actionBarHeight
-                = ((ActionBarActivity) getActivity()).getSupportActionBar().getHeight();
+        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        int actionBarHeight = actionBar == null ? 0 : actionBar.getHeight();
+
         int statusBarHeight = getStatusBarHeight();
         final int topOffset = actionBarHeight + statusBarHeight;
 
