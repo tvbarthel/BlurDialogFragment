@@ -5,27 +5,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.Button;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
-
-    private Button mDoBlurButton;
-
-    private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mWebView = ((WebView) findViewById(R.id.webView));
-        mWebView.loadUrl(getString(R.string.url));
-
-        mDoBlurButton = ((Button) findViewById(R.id.button));
-        mDoBlurButton.setOnClickListener(this);
-
+        findViewById(R.id.button).setOnClickListener(this);
     }
 
 

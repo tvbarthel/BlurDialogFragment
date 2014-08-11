@@ -7,5 +7,6 @@
     <string name="blur_title">Blur Sample</string>
     <string name="url">http://tvbarthel.github.io/</string>
     <string name="dialog_fragment_title">Blur Dialog Fragment</string>
+    <string name="content_description_imageview">Android since 2008 by ijooh</string>
 
 </resources>

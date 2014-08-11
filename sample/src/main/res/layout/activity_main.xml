@@ -40,10 +40,12 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
-    <WebView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/webView"
+        android:id="@+id/imageView"
+        android:contentDescription="@string/content_description_imageview"
+        android:src="@drawable/android"
         android:layout_below="@+id/ratingBar"
         android:layout_above="@+id/seekBar" />
 </RelativeLayout>
