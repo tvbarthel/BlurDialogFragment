@@ -93,7 +93,7 @@ public class BlurDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mBlurredBackgroundView == null) {
+        if (mBlurredBackgroundView == null || getRetainInstance()) {
             mBluringTask = new BlurAsyncTask();
             mBluringTask.execute();
         }
