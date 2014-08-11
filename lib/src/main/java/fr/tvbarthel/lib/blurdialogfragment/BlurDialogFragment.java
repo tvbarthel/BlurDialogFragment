@@ -73,6 +73,7 @@ public class BlurDialogFragment extends DialogFragment {
      */
     private int mBlurRadius = BLUR_RADIUS;
 
+
     /**
      * default constructor as needed
      */
@@ -85,12 +86,17 @@ public class BlurDialogFragment extends DialogFragment {
         super.onAttach(activity);
 
         if (!(activity instanceof ActionBarActivity)) {
-            throw new IllegalStateException("BlurDialogFragment need to be attached to an ActionBarActivity");
+            throw new IllegalStateException("BlurDialogFragment must be attached to an ActionBarActivity");
         }
+    }
 
-        mBluringTask = new BlurAsyncTask();
-        mBluringTask.execute();
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mBlurredBackgroundView == null) {
+            mBluringTask = new BlurAsyncTask();
+            mBluringTask.execute();
+        }
     }
 
     @Override
@@ -104,6 +110,14 @@ public class BlurDialogFragment extends DialogFragment {
         //cancel async task
         mBluringTask.cancel(true);
         mBluringTask = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null) {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 
     /**
@@ -237,8 +251,8 @@ public class BlurDialogFragment extends DialogFragment {
      */
     public class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
 
-        private final ActionBarActivity activity
-                = ((ActionBarActivity) BlurDialogFragment.this.getActivity());
+        private final Activity activity
+                = BlurDialogFragment.this.getActivity();
 
         private Bitmap mBackground;
 
@@ -252,10 +266,30 @@ public class BlurDialogFragment extends DialogFragment {
 
             //retrieve background view, must be achieved on ui thread since
             //only the original thread that created a view hierarchy can touch its views.
+
+            Rect rect = new Rect();
+            mBackgroundView.getWindowVisibleDisplayFrame(rect);
             mBackgroundView.destroyDrawingCache();
             mBackgroundView.setDrawingCacheEnabled(true);
             mBackgroundView.buildDrawingCache(true);
-            mBackground = mBackgroundView.getDrawingCache();
+            mBackground = mBackgroundView.getDrawingCache(true);
+
+            /**
+             * After rotation, the DecorView has no height and no width. Therefore
+             * .getDrawingCache() return null. That's why we  have to force measure and layout.
+             */
+            if (mBackground == null) {
+                mBackgroundView.measure(
+                        View.MeasureSpec.makeMeasureSpec(rect.width(), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(rect.height(), View.MeasureSpec.EXACTLY)
+                );
+                mBackgroundView.layout(0, 0, mBackgroundView.getMeasuredWidth(),
+                        mBackgroundView.getMeasuredHeight());
+                mBackgroundView.destroyDrawingCache();
+                mBackgroundView.setDrawingCacheEnabled(true);
+                mBackgroundView.buildDrawingCache(true);
+                mBackground = mBackgroundView.getDrawingCache(true);
+            }
         }
 
         @Override
