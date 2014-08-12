@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -175,11 +176,18 @@ public class BlurDialogFragment extends DialogFragment {
         //overlay used to build scaled preview and blur background
         Bitmap overlay = null;
 
-        //evaluate top offset
+        //evaluate top offset due to action bar
         ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
         int actionBarHeight = actionBar == null ? 0 : actionBar.getHeight();
 
-        int statusBarHeight = getStatusBarHeight();
+        //evaluate top offset due to status bar
+        int statusBarHeight = 0;
+        if ((getActivity().getWindow().getAttributes().flags
+                & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0) {
+            //not in fullscreen mode
+            statusBarHeight = getStatusBarHeight();
+        }
+
         final int topOffset = actionBarHeight + statusBarHeight;
 
         //add offset to the source boundaries since we don't want to blur actionBar pixels
