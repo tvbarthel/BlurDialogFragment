@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">BlurDialogFragment</string>
-    <string name="action_settings">Settings</string>
+    <string name="actions_fullscreen">Full Screen</string>
     <string name="blur_button">Blur Dialog</string>
     <string name="blur_title">Blur Sample</string>
     <string name="dialog_fragment_title">Blur Dialog Fragment</string>
