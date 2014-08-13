@@ -10,6 +10,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/dialog_fragment_title"
         android:id="@+id/textView"
+        android:gravity="center"
+        android:padding="10dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
