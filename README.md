@@ -5,14 +5,14 @@ This project allows to display DialogFragment with a burring effect behind. The 
 
 This project is based on android.support.v4.app.DialogFragment and android.support.v7.app.ActionBarActivity.
 
-* [Example](https://github.com/tvbarthel/BlurDialogFragment/#example)
-* [Dependency](https://github.com/tvbarthel/BlurDialogFragment/#dependency)
-* [Simple usage](https://github.com/tvbarthel/BlurDialogFragment/#simple-usage)
-* [Known bugs](https://github.com/tvbarthel/BlurDialogFragment/#known-bugs)
-* [TODO](https://github.com/tvbarthel/BlurDialogFragment/#todo)
-* [Credits](https://github.com/tvbarthel/BlurDialogFragment/#credits)
-* [License](https://github.com/tvbarthel/BlurDialogFragment/#license)
-* [Special Thanks](https://github.com/tvbarthel/BlurDialogFragment/#special-thanks-to-)
+* [Example](#example)
+* [Dependency](#dependency)
+* [Simple usage](#simple-usage)
+* [Known bugs](#known-bugs)
+* [TODO](#todo)
+* [Credits](#credits)
+* [License](#license)
+* [Special Thanks](#special-thanks-to-)
 
 Example
 =======
