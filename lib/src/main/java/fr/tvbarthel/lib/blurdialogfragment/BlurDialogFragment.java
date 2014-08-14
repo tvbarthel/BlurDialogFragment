@@ -35,7 +35,7 @@ public class BlurDialogFragment extends DialogFragment {
 
     /**
      * Since image is going to be blurred, we don't care about resolution.
-     * Down scale factor to decrease blurring time.
+     * Down scale factor to reduce blurring time and memory allocation.
      */
     private static final float BLUR_DOWN_SCALE_FACTOR = 8.0f;
 
