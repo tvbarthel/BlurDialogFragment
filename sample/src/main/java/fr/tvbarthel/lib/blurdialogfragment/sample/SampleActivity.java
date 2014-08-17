@@ -6,9 +6,28 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment;
 
 
 public class SampleActivity extends ActionBarActivity implements View.OnClickListener {
+
+    /**
+     * Seek bar used to change the blur radius.
+     */
+    SeekBar mBlurRadiusSeekbar;
+
+    /**
+     * TextView used to display the current blur radius.
+     */
+    TextView mBlurRadiusTextView;
+
+    /**
+     * Prefix used to explain blur radius.
+     */
+    String mBlurPrefix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +35,10 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
         setContentView(R.layout.activity_sample);
 
         findViewById(R.id.button).setOnClickListener(this);
+        mBlurRadiusTextView = ((TextView) findViewById(R.id.blurRadius));
+        mBlurRadiusSeekbar = ((SeekBar) findViewById(R.id.blurRadiusSeekbar));
+
+        setUpView();
     }
 
     @Override
@@ -42,10 +65,45 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                new SampleDialogFragment().show(getSupportFragmentManager(), "blur_sample");
+                SampleDialogFragment fragment = new SampleDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(
+                        BlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
+                        mBlurRadiusSeekbar.getProgress()
+                );
+                fragment.setArguments(args);
+                fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * Set up widgets.
+     */
+    private void setUpView() {
+
+        mBlurRadiusSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mBlurRadiusTextView.setText(mBlurPrefix + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        mBlurPrefix = getString(R.string.activity_sample_blur_radius);
+
+        //set default blur radius to 8.
+        mBlurRadiusSeekbar.setProgress(8);
     }
 }

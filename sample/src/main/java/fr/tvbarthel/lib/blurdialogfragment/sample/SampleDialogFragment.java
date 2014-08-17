@@ -19,8 +19,6 @@ public class SampleDialogFragment extends BlurDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.enableLog(true);
-        this.setBlurRadius(4);
-        this.setDownScaleFactor(5.0f);
     }
 
     @Override

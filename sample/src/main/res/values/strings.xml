@@ -7,5 +7,6 @@
     <string name="blur_title">Blur Sample</string>
     <string name="dialog_fragment_title">Blur Dialog Fragment\n\nhttps://github.com/tvbarthel/BlurDialogFragment</string>
     <string name="content_description_imageview">Android since 2008 by ijooh</string>
+    <string name="activity_sample_blur_radius">Blur radius : </string>
 
 </resources>
