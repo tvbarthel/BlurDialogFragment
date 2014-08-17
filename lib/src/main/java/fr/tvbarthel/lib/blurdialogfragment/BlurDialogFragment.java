@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -29,6 +30,16 @@ import android.widget.ImageView;
 public class BlurDialogFragment extends DialogFragment {
 
     /**
+     * Bundle key used to start the blur dialog with a given scale factor (float).
+     */
+    public static final String BUNDLE_KEY_DOWN_SCALE_FACTOR = "bundle_key_down_scale_factor";
+
+    /**
+     * Bundle key used to start the blur dialog with a given blur radius (int).
+     */
+    public static final String BUNDLE_KEY_BLUR_RADIUS = "bundle_key_blur_radius";
+
+    /**
      * Log cat
      */
     private static final String TAG = BlurDialogFragment.class.getSimpleName();
@@ -42,7 +53,7 @@ public class BlurDialogFragment extends DialogFragment {
     /**
      * Radius used to blur the background
      */
-    private static final int BLUR_RADIUS = 2;
+    private static final int BLUR_RADIUS = 8;
 
     /**
      * Image view used to display blurred background.
@@ -89,6 +100,16 @@ public class BlurDialogFragment extends DialogFragment {
 
         if (!(activity instanceof ActionBarActivity)) {
             throw new IllegalStateException("BlurDialogFragment must be attached to an ActionBarActivity");
+        }
+
+        Bundle args = getArguments();
+        if (args != null) {
+            if (args.containsKey(BUNDLE_KEY_BLUR_RADIUS)) {
+                mBlurRadius = args.getInt(BUNDLE_KEY_BLUR_RADIUS);
+            }
+            if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
+                mDownScaleFactor = args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR);
+            }
         }
     }
 
@@ -234,7 +255,7 @@ public class BlurDialogFragment extends DialogFragment {
         overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
 
         if (mLogEnable) {
-            Log.d(TAG, "blurred achieved in : " + (System.currentTimeMillis() - startMs) + "ms");
+            Log.d(TAG, "blurred achieved in : " + (System.currentTimeMillis() - startMs) + "ms with radius : " + mBlurRadius);
         }
 
         //set bitmap in an image view for final rendering
