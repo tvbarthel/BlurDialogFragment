@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
-    tools:context=".MainActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:background="@drawable/background"
+                tools:context=".MainActivity">
 
 
     <TextView
@@ -19,7 +19,7 @@
         android:gravity="center"
         android:id="@+id/title"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="match_parent"
@@ -27,7 +27,25 @@
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/blur_button" />
+        android:text="@string/blur_button"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/activity_sample_down_scale_factor"
+        android:gravity="left"
+        android:textColor="@android:color/white"
+        android:layout_alignParentRight="true"
+        android:id="@+id/downScalefactor"
+        android:layout_above="@+id/downScaleFactorSeekbar"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/downScaleFactorSeekbar"
+        android:layout_above="@+id/blurRadius"
+        android:max="200"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -38,14 +56,14 @@
         android:textColor="@android:color/white"
         android:layout_alignParentRight="true"
         android:id="@+id/blurRadius"
-        android:layout_above="@+id/blurRadiusSeekbar" />
+        android:layout_above="@+id/blurRadiusSeekbar"/>
 
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/blurRadiusSeekbar"
         android:layout_above="@+id/button"
-        android:max="20" />
+        android:max="20"/>
 
 
     <ImageView
@@ -54,6 +72,6 @@
         android:id="@+id/imageView"
         android:contentDescription="@string/content_description_imageview"
         android:layout_below="@+id/title"
-        android:layout_above="@+id/blurRadius" />
+        android:layout_above="@+id/blurRadius"/>
 
 </RelativeLayout>

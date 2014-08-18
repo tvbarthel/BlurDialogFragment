@@ -29,6 +29,21 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
      */
     String mBlurPrefix;
 
+    /**
+     * Seek bar used to change the down scale factor.
+     */
+    SeekBar mDownScaleFactorSeekbar;
+
+    /**
+     * TextView used to display the current down scale factor.
+     */
+    TextView mDownScaleFactorTextView;
+
+    /**
+     * Prefix used to explain down scale factor.
+     */
+    String mDownScalePrefix;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +52,8 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
         findViewById(R.id.button).setOnClickListener(this);
         mBlurRadiusTextView = ((TextView) findViewById(R.id.blurRadius));
         mBlurRadiusSeekbar = ((SeekBar) findViewById(R.id.blurRadiusSeekbar));
+        mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
+        mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
 
         setUpView();
     }
@@ -71,6 +88,10 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
                         BlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
                         mBlurRadiusSeekbar.getProgress()
                 );
+                args.putFloat(
+                        BlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
+                        mDownScaleFactorSeekbar.getProgress() / 10f
+                );
                 fragment.setArguments(args);
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;
@@ -101,9 +122,28 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
             }
         });
 
+        mDownScaleFactorSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mDownScaleFactorTextView.setText(mDownScalePrefix + (progress / 10.f));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         mBlurPrefix = getString(R.string.activity_sample_blur_radius);
+        mDownScalePrefix = getString(R.string.activity_sample_down_scale_factor);
 
         //set default blur radius to 8.
         mBlurRadiusSeekbar.setProgress(8);
+        mDownScaleFactorSeekbar.setProgress(80);
     }
 }

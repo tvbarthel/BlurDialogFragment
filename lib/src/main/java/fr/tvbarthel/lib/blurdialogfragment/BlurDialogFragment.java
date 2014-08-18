@@ -172,7 +172,7 @@ public class BlurDialogFragment extends DialogFragment {
      * By default blur radius is set to
      * {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment#BLUR_RADIUS}
      *
-     * @param radius
+     * @param radius custom radius used to blur.
      */
     public void setBlurRadius(int radius) {
         mBlurRadius = radius;
@@ -244,7 +244,6 @@ public class BlurDialogFragment extends DialogFragment {
         Paint paint = new Paint();
         paint.setFlags(Paint.FILTER_BITMAP_FLAG);
 
-
         //build drawing destination boundaries
         final RectF destRect = new RectF(0, 0, overlay.getWidth(), overlay.getHeight());
 
@@ -255,7 +254,11 @@ public class BlurDialogFragment extends DialogFragment {
         overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
 
         if (mLogEnable) {
-            Log.d(TAG, "blurred achieved in : " + (System.currentTimeMillis() - startMs) + "ms with radius : " + mBlurRadius);
+            Log.d(TAG, "Radius : " + mBlurRadius);
+            Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
+            Log.d(TAG, "Blurred achieved in : " + (System.currentTimeMillis() - startMs) + " ms");
+            Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
+                    + overlay.getRowBytes() + "ko (FastBlur)");
         }
 
         //set bitmap in an image view for final rendering
