@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
+apply from: '../config/quality.gradle'
 
 def version = '0.0.4'
 
