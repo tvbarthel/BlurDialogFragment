@@ -18,7 +18,6 @@ public class SampleDialogFragment extends BlurDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.debug(true);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -40,6 +41,11 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
     TextView mDownScaleFactorTextView;
 
     /**
+     * Checkbox used to enable or disable debug mode.
+     */
+    CheckBox mDebugMode;
+
+    /**
      * Prefix used to explain down scale factor.
      */
     String mDownScalePrefix;
@@ -54,6 +60,7 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
         mBlurRadiusSeekbar = ((SeekBar) findViewById(R.id.blurRadiusSeekbar));
         mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
+        mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
 
         setUpView();
     }
@@ -93,6 +100,7 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
                         mDownScaleFactorSeekbar.getProgress() / 10f
                 );
                 fragment.setArguments(args);
+                fragment.debug(mDebugMode.isChecked());
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;
             default:
