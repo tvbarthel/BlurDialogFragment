@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -71,9 +72,9 @@ public class BlurDialogFragment extends DialogFragment {
     private BlurAsyncTask mBluringTask;
 
     /**
-     * Used to enable or disable log.
+     * Used to enable or disable debug mod.
      */
-    private boolean mLogEnable = false;
+    private boolean mDebudEnable = false;
 
     /**
      * Factor used to down scale background. High quality isn't necessary
@@ -144,12 +145,14 @@ public class BlurDialogFragment extends DialogFragment {
     }
 
     /**
-     * Enable / disable log.
+     * Enable / disable debug mode.
+     * <p/>
+     * LogCat and graphical information directly on blurred screen.
      *
      * @param enable true to display log in LogCat.
      */
-    public void enableLog(boolean enable) {
-        mLogEnable = enable;
+    public void debug(boolean enable) {
+        mDebudEnable = enable;
     }
 
     /**
@@ -253,12 +256,24 @@ public class BlurDialogFragment extends DialogFragment {
         //apply fast blur on overlay
         overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
 
-        if (mLogEnable) {
+        if (mDebudEnable) {
+            String blurTime = (System.currentTimeMillis() - startMs) + " ms";
+
+            //display information in LogCat
             Log.d(TAG, "Radius : " + mBlurRadius);
             Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
-            Log.d(TAG, "Blurred achieved in : " + (System.currentTimeMillis() - startMs) + " ms");
+            Log.d(TAG, "Blurred achieved in : " + blurTime);
             Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
                     + overlay.getRowBytes() + "ko (FastBlur)");
+
+            //display blurring time directly on screen
+            Rect bounds = new Rect();
+            Canvas canvas1 = new Canvas(overlay);
+            paint.setColor(Color.WHITE);
+            paint.setAntiAlias(true);
+            paint.setTextSize(20.0f);
+            paint.getTextBounds(blurTime, 0, blurTime.length(), bounds);
+            canvas1.drawText(blurTime, 2, bounds.height(), paint);
         }
 
         //set bitmap in an image view for final rendering
