@@ -32,6 +32,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/transparent_grey"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/activity_sample_down_scale_factor"
         android:gravity="left"
@@ -44,12 +45,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/downScaleFactorSeekbar"
+        android:background="@color/transparent_grey"
         android:layout_above="@+id/blurRadius"
         android:max="200" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/transparent_grey"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/activity_sample_blur_radius"
         android:gravity="left"
@@ -61,16 +64,18 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/transparent_grey"
         android:id="@+id/blurRadiusSeekbar"
         android:layout_above="@+id/button"
         android:max="20" />
 
     <CheckBox
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/activity_sample_blur_debug"
         android:textColor="@android:color/white"
         android:id="@+id/debugMode"
+        android:background="@color/transparent_grey"
         android:layout_above="@+id/downScalefactor"
         android:layout_alignParentRight="true" />
 
