@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BlurDialogFragment</string>
+    <string name="app_name">Blur Dialog Fragment</string>
     <string name="actions_fullscreen">Full Screen</string>
     <string name="blur_button">Blur Dialog</string>
     <string name="blur_title">Blur Sample</string>
     <string name="dialog_fragment_title">Blur Dialog Fragment\n\nhttps://github.com/tvbarthel/BlurDialogFragment</string>
-    <string name="content_description_imageview">Android since 2008 by ijooh</string>
     <string name="activity_sample_blur_radius">Blur radius : </string>
     <string name="activity_sample_down_scale_factor">Down Scale Factor : </string>
     <string name="activity_sample_blur_debug">Debug enable</string>
