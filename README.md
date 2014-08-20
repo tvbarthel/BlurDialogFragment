@@ -8,6 +8,7 @@ This project is based on android.support.v4.app.DialogFragment and android.suppo
 * [Example](#example)
 * [Dependency](#dependency)
 * [Simple usage](#simple-usage)
+* [Benchmark](#benchmark)
 * [Known bugs](#known-bugs)
 * [TODO](#todo)
 * [Credits](#credits)
@@ -42,7 +43,7 @@ public class SampleDialogFragment extends BlurDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.enableLog(true);
+        this.debug(true);
         this.setBlurRadius(4);
         this.setDownScaleFactor(5.0f);
         
@@ -67,6 +68,33 @@ Default values are set to :
     private static final int BLUR_RADIUS = 2;
     
 ```
+
+Benchmark
+=======
+Down scale factor 8.0 & Blur Radius 8 : [Screenshot](/static/blur_8.0_8.png)
+```javascript
+Radius : 8
+Down Scale Factor : 8.0
+Blurred achieved in : 18 ms
+Allocation : 4320ko (screen capture) + 270ko (FastBlur)
+```
+
+Down scale factor 6.0 & Blur Radius 12 : [Screenshot](/static/blur_6.0_12.png)
+```javascript
+Radius : 12
+Down Scale Factor : 6.0
+Blurred achieved in : 31 ms
+Allocation : 4320ko (screen capture) + 360ko (FastBlur)
+```
+
+Down scale factor 4.0 & Blur Radius 20 : [Screenshot](/static/blur_4.0_20.png)
+```javascript
+Radius : 20
+Down Scale Factor : 4.0
+Blurred achieved in : 75 ms
+Allocation : 4320ko (screen capture) + 540ko (FastBlur)
+```
+
 
 Known bugs
 =======
