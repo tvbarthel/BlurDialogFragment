@@ -106,10 +106,10 @@ public class BlurDialogFragment extends DialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             if (args.containsKey(BUNDLE_KEY_BLUR_RADIUS)) {
-                mBlurRadius = args.getInt(BUNDLE_KEY_BLUR_RADIUS);
+                setBlurRadius(args.getInt(BUNDLE_KEY_BLUR_RADIUS));
             }
             if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
-                mDownScaleFactor = args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR);
+                setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
             }
         }
     }
@@ -127,9 +127,12 @@ public class BlurDialogFragment extends DialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        //remove blurred background and clear memory
-        mBlurredBackgroundView.setVisibility(View.GONE);
-        mBlurredBackgroundView = null;
+        //remove blurred background and clear memory, could be null if dismissed before blur effect
+        //processing ends
+        if (mBlurredBackgroundView != null) {
+            mBlurredBackgroundView.setVisibility(View.GONE);
+            mBlurredBackgroundView = null;
+        }
 
         //cancel async task
         mBluringTask.cancel(true);
@@ -163,10 +166,14 @@ public class BlurDialogFragment extends DialogFragment {
      * <p/>
      * Higher down scale factor will increase blurring speed but reduce final rendering quality.
      *
-     * @param factor customized down scale factor.
+     * @param factor customized down scale factor, must be at least 1.0 ( no down scale applied )
      */
     public void setDownScaleFactor(float factor) {
-        mDownScaleFactor = factor;
+        if (factor >= 1.0f) {
+            mDownScaleFactor = factor;
+        } else {
+            mDownScaleFactor = 1.0f;
+        }
     }
 
     /**
@@ -178,7 +185,11 @@ public class BlurDialogFragment extends DialogFragment {
      * @param radius custom radius used to blur.
      */
     public void setBlurRadius(int radius) {
-        mBlurRadius = radius;
+        if (radius >= 0) {
+            mBlurRadius = radius;
+        } else {
+            mBlurRadius = 0;
+        }
     }
 
     /**
