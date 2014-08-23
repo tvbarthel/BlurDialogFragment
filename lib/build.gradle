@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply from: '../config/quality.gradle'
 
-def version = '0.0.5'
+def version = '0.0.6'
 
 android {
     compileSdkVersion 19
