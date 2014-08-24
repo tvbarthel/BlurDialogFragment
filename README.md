@@ -10,6 +10,7 @@ This project is based on android.support.v4.app.DialogFragment and android.suppo
 * [Simple usage](#simple-usage)
 * [Benchmark](#benchmark)
 * [Known bugs](#known-bugs)
+* [RenderScript or not RenderScript](#renderscript-or-not-renderscript)
 * [TODO](#todo)
 * [Credits](#credits)
 * [License](#license)
@@ -102,6 +103,15 @@ Known bugs
 ```xml
 <item name="android:windowActionBarOverlay">true</item>
 ```
+
+RenderScript or not RenderScript
+=======
+Since ScriptIntrinsicBlur seems to doens't work with RGB_565 Bitmap (used to reduce by half Bitmap allocation) I keep thinking about using RenderScript for applying blur effect.
+
+Find more information on the [original thread](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595)
+
+
+
 
 TODO
 =======
