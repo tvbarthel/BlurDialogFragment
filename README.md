@@ -12,6 +12,7 @@ This project is based on android.support.v4.app.DialogFragment and android.suppo
 * [Known bugs](#known-bugs)
 * [RenderScript or not RenderScript](#renderscript-or-not-renderscript)
 * [TODO](#todo)
+* [Contributing](#contributing)
 * [Credits](#credits)
 * [License](#license)
 * [Special Thanks](#special-thanks-to-)
@@ -116,7 +117,13 @@ Find more information on the [original thread](http://trickyandroid.com/advanced
 TODO
 =======
 * Implement SherlockBlurDialogFragment since actionbarsherlock and appcompat are mutually exclusive.
-* Try to base blur on android.support.v8.renderscript to avoid copying entire bitmap.
+
+Contributing
+=======
+
+Contributions are welcome (: You can contribute through GitHub by forking the repository and sending a pull request.
+
+When submitting code, please make every effort to follow existing conventions and style in order to keep the code as readable as possible. Please also make sure your code fit these convention by running gradlew check.
 
 Credits
 ========
