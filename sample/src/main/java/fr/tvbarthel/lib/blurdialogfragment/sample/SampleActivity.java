@@ -10,7 +10,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment;
+import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 
 
 public class SampleActivity extends ActionBarActivity implements View.OnClickListener {
@@ -92,11 +92,11 @@ public class SampleActivity extends ActionBarActivity implements View.OnClickLis
                 SampleDialogFragment fragment = new SampleDialogFragment();
                 Bundle args = new Bundle();
                 args.putInt(
-                        BlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
+                        SupportBlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
                         mBlurRadiusSeekbar.getProgress()
                 );
                 args.putFloat(
-                        BlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
+                        SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
                         mDownScaleFactorSeekbar.getProgress() / 10f
                 );
                 fragment.setArguments(args);

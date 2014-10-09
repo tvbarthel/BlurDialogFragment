@@ -1,7 +1,6 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,8 +10,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -24,26 +21,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
- * Encapsulate dialog behavior with blur effect.
+ * Encapsulate the whole behaviour to provide a blur effect on a DialogFragment.
  * <p/>
  * All the screen behind the dialog will be blurred except the action bar.
+ * <p/>
+ * Simply linked all methods to the matching lifecycle ones.
  */
-public class BlurDialogFragment extends DialogFragment {
-
-    /**
-     * Bundle key used to start the blur dialog with a given scale factor (float).
-     */
-    public static final String BUNDLE_KEY_DOWN_SCALE_FACTOR = "bundle_key_down_scale_factor";
-
-    /**
-     * Bundle key used to start the blur dialog with a given blur radius (int).
-     */
-    public static final String BUNDLE_KEY_BLUR_RADIUS = "bundle_key_blur_radius";
+public class BlurDialogEngine {
 
     /**
      * Log cat
      */
-    private static final String TAG = BlurDialogFragment.class.getSimpleName();
+    private static final String TAG = BlurDialogEngine.class.getSimpleName();
 
     /**
      * Since image is going to be blurred, we don't care about resolution.
@@ -87,46 +76,38 @@ public class BlurDialogFragment extends DialogFragment {
      */
     private int mBlurRadius = BLUR_RADIUS;
 
+    /**
+     * Holding activity.
+     */
+    private Activity mHoldingActivity;
+
 
     /**
-     * default constructor as needed
+     * Constructor.
+     *
+     * @param holdingActivity activity which holds the DialogFragment.
      */
-    public BlurDialogFragment() {
-
+    public BlurDialogEngine(Activity holdingActivity) {
+        mHoldingActivity = holdingActivity;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (!(activity instanceof ActionBarActivity)) {
-            throw new IllegalStateException("BlurDialogFragment must be attached to an ActionBarActivity");
-        }
-
-        Bundle args = getArguments();
-        if (args != null) {
-            if (args.containsKey(BUNDLE_KEY_BLUR_RADIUS)) {
-                setBlurRadius(args.getInt(BUNDLE_KEY_BLUR_RADIUS));
-            }
-            if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
-                setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mBlurredBackgroundView == null || getRetainInstance()) {
+    /**
+     * Resume the engine.
+     *
+     * @param retainedInstance use getRetainInstance.
+     */
+    public void onResume(boolean retainedInstance) {
+        if (mBlurredBackgroundView == null || retainedInstance) {
             mBluringTask = new BlurAsyncTask();
             mBluringTask.execute();
         }
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
 
+    /**
+     * Must be linked to the original lifecycle.
+     */
+    public void onDismiss() {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
@@ -139,12 +120,11 @@ public class BlurDialogFragment extends DialogFragment {
         mBluringTask = null;
     }
 
-    @Override
-    public void onDestroyView() {
-        if (getDialog() != null) {
-            getDialog().setDismissMessage(null);
-        }
-        super.onDestroyView();
+    /**
+     * Must be linked to the original lifecycle.
+     */
+    public void onDestroy() {
+        mHoldingActivity = null;
     }
 
     /**
@@ -162,7 +142,7 @@ public class BlurDialogFragment extends DialogFragment {
      * Apply custom down scale factor.
      * <p/>
      * By default down scale factor is set to
-     * {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment#BLUR_DOWN_SCALE_FACTOR}
+     * {@link BlurDialogEngine#BLUR_DOWN_SCALE_FACTOR}
      * <p/>
      * Higher down scale factor will increase blurring speed but reduce final rendering quality.
      *
@@ -180,7 +160,7 @@ public class BlurDialogFragment extends DialogFragment {
      * Apply custom blur radius.
      * <p/>
      * By default blur radius is set to
-     * {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment#BLUR_RADIUS}
+     * {@link BlurDialogEngine#BLUR_RADIUS}
      *
      * @param radius custom radius used to blur.
      */
@@ -195,13 +175,11 @@ public class BlurDialogFragment extends DialogFragment {
     /**
      * Blur the given bitmap and add it to the activity.
      *
-     * @param bkg      should be a bitmap of the background.
-     * @param view     background view.
-     * @param activity activity used to display blurred background.
+     * @param bkg  should be a bitmap of the background.
+     * @param view background view.
      */
-    private void blur(Bitmap bkg, View view, Activity activity) {
+    private void blur(Bitmap bkg, View view) {
         long startMs = System.currentTimeMillis();
-
         //define layout params to the previous imageView in order to match its parent
         mBlurredBackgroundLayoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -212,12 +190,23 @@ public class BlurDialogFragment extends DialogFragment {
         Bitmap overlay = null;
 
         //evaluate top offset due to action bar
-        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
-        int actionBarHeight = actionBar == null ? 0 : actionBar.getHeight();
+        int actionBarHeight = 0;
+
+        if (mHoldingActivity instanceof ActionBarActivity) {
+            ActionBar supportActionBar = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
+            if (supportActionBar != null) {
+                actionBarHeight = supportActionBar.getHeight();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
+            if (actionBar != null) {
+                actionBarHeight = actionBar.getHeight();
+            }
+        }
 
         //evaluate top offset due to status bar
         int statusBarHeight = 0;
-        if ((getActivity().getWindow().getAttributes().flags
+        if ((mHoldingActivity.getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0) {
             //not in fullscreen mode
             statusBarHeight = getStatusBarHeight();
@@ -288,8 +277,8 @@ public class BlurDialogFragment extends DialogFragment {
         }
 
         //set bitmap in an image view for final rendering
-        mBlurredBackgroundView = new ImageView(activity);
-        mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(getResources(), overlay));
+        mBlurredBackgroundView = new ImageView(mHoldingActivity);
+        mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), overlay));
     }
 
     /**
@@ -299,20 +288,18 @@ public class BlurDialogFragment extends DialogFragment {
      */
     private int getStatusBarHeight() {
         int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = mHoldingActivity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
+            result = mHoldingActivity.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
+
 
     /**
      * Async task used to process blur out of ui thread
      */
     public class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private final Activity activity
-                = BlurDialogFragment.this.getActivity();
 
         private Bitmap mBackground;
 
@@ -322,7 +309,7 @@ public class BlurDialogFragment extends DialogFragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            mBackgroundView = activity.getWindow().getDecorView();
+            mBackgroundView = mHoldingActivity.getWindow().getDecorView();
 
             //retrieve background view, must be achieved on ui thread since
             //only the original thread that created a view hierarchy can touch its views.
@@ -356,7 +343,7 @@ public class BlurDialogFragment extends DialogFragment {
         protected Void doInBackground(Void... params) {
 
             //process to the blue
-            blur(mBackground, mBackgroundView, activity);
+            blur(mBackground, mBackgroundView);
 
             //clear memory
             mBackground.recycle();
@@ -369,8 +356,8 @@ public class BlurDialogFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            //display blurred background
-            activity.getWindow().addContentView(
+
+            mHoldingActivity.getWindow().addContentView(
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );

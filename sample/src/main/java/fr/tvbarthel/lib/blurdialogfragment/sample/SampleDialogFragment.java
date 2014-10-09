@@ -8,12 +8,12 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
-import fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment;
+import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 
 /**
  * Simple fragment with blur effect behind.
  */
-public class SampleDialogFragment extends BlurDialogFragment {
+public class SampleDialogFragment extends SupportBlurDialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

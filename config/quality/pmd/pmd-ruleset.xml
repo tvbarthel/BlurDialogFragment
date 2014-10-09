@@ -14,6 +14,9 @@
         <exclude name="ProtectLogD" />
         <!-- Config.LOGV deprecated in API level 4 !-->
         <exclude name="ProtectLogV" />
+        <!-- Exclude since Engine has onCreate|onResume|onDismiss methods which can't call any super.X() !-->
+        <exclude name="CallSuperFirst" />
+        <exclude name="CallSuperLast" />
     </rule>
     <rule ref="rulesets/clone.xml" />
     <rule ref="rulesets/finalizers.xml" />

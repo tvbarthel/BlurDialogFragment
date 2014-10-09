@@ -65,7 +65,7 @@ task pmd(type: Pmd) {
 
 android {
     lintOptions {
-        abortOnError true
+        abortOnError false
 
         // if true, generate an HTML report (with issue explanations, sourcecode, etc)
         htmlReport true
