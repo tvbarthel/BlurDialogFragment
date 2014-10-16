@@ -38,7 +38,7 @@ public class BlurDialogEngine {
      * Since image is going to be blurred, we don't care about resolution.
      * Down scale factor to reduce blurring time and memory allocation.
      */
-    private static final float BLUR_DOWN_SCALE_FACTOR = 8.0f;
+    private static final float BLUR_DOWN_SCALE_FACTOR = 4.0f;
 
     /**
      * Radius used to blur the background
@@ -191,19 +191,27 @@ public class BlurDialogEngine {
 
         //evaluate top offset due to action bar
         int actionBarHeight = 0;
-
-        if (mHoldingActivity instanceof ActionBarActivity) {
-            ActionBar supportActionBar = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
-            if (supportActionBar != null) {
-                actionBarHeight = supportActionBar.getHeight();
+        try {
+            if (mHoldingActivity instanceof ActionBarActivity) {
+                ActionBar supportActionBar
+                        = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
+                if (supportActionBar != null) {
+                    actionBarHeight = supportActionBar.getHeight();
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
+                if (actionBar != null) {
+                    actionBarHeight = actionBar.getHeight();
+                }
             }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
-            if (actionBar != null) {
-                actionBarHeight = actionBar.getHeight();
+        } catch (NoClassDefFoundError e) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
+                if (actionBar != null) {
+                    actionBarHeight = actionBar.getHeight();
+                }
             }
         }
-
         //evaluate top offset due to status bar
         int statusBarHeight = 0;
         if ((mHoldingActivity.getWindow().getAttributes().flags
@@ -349,7 +357,6 @@ public class BlurDialogEngine {
             mBackground.recycle();
             mBackgroundView.destroyDrawingCache();
             mBackgroundView.setDrawingCacheEnabled(false);
-
             return null;
         }
 
@@ -361,6 +368,9 @@ public class BlurDialogEngine {
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );
+
+            mBackgroundView = null;
+            mBackground = null;
         }
     }
 }
