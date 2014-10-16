@@ -1,22 +1,19 @@
 package fr.tvbarthel.lib.blurdialogfragment.sample;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
-import fr.tvbarthel.lib.blurdialogfragment.BlurDialogFragment;
+import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 
 /**
  * Simple fragment with blur effect behind.
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SampleDialogFragment extends BlurDialogFragment {
+public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
