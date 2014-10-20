@@ -12,6 +12,7 @@ This project is based on android.support.v4.app.DialogFragment and android.suppo
 * [Known bugs](#known-bugs)
 * [RenderScript or not RenderScript](#renderscript-or-not-renderscript)
 * [TODO](#todo)
+* [Change logs](#change-logs)
 * [Contributing](#contributing)
 * [Credits](#credits)
 * [License](#license)
@@ -117,6 +118,12 @@ Find more information on the [original thread](http://trickyandroid.com/advanced
 TODO
 =======
 * Implement SherlockBlurDialogFragment since actionbarsherlock and appcompat are mutually exclusive.
+
+Change logs
+=======
+* 0.0.9 : Change default blur radius (8) and default down scale factor (4).
+* 0.0.8 : Fix NoClassDefFound.
+* 0.0.7 : Avoid using inheritance through BlurDialogEngine if needed.
 
 Contributing
 =======
