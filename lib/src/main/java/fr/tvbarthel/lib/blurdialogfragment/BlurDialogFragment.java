@@ -99,4 +99,28 @@ public class BlurDialogFragment extends DialogFragment {
     public void debug(boolean debugEnable) {
         mDebugEnable = debugEnable;
     }
+
+    /**
+     * Set the down scale factor used by the {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogEngine}
+     *
+     * @param factor down scaled factor used to reduce the size of the source image.
+     *               Range :  ]0,infinity)
+     */
+    public void setDownScaleFactor(float factor) {
+        if (factor > 0) {
+            mBlurEngine.setDownScaleFactor(factor);
+        }
+    }
+
+    /**
+     * Set the blur radius used by the {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogEngine}
+     *
+     * @param radius down scaled factor used to reduce the size of the source image.
+     *               Range :  [1,infinity)
+     */
+    public void setBlurRadius(int radius) {
+        if (radius > 0) {
+            mBlurEngine.setBlurRadius(radius);
+        }
+    }
 }
