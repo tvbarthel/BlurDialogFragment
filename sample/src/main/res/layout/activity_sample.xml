@@ -1,77 +1,97 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
-    tools:context=".MainActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin">
 
-
-    <TextView
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_settings"
+        android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/blur_title"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:id="@+id/title"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp">
 
-    <Button
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/activity_sample_down_scale_factor"
+                android:gravity="left"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/downScalefactor" />
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/downScaleFactorSeekbar"
+                android:max="20" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/activity_sample_blur_radius"
+                android:gravity="left"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/blurRadius" />
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/blurRadiusSeekbar"
+                android:max="20" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_controller"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/blur_button" />
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/activity_sample_down_scale_factor"
-        android:gravity="left"
-        android:textColor="@android:color/white"
-        android:layout_alignParentRight="true"
-        android:id="@+id/downScalefactor"
-        android:layout_above="@+id/downScaleFactorSeekbar" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/downScaleFactorSeekbar"
-        android:layout_above="@+id/blurRadius"
-        android:max="20" />
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_sample_blur_debug"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/debugMode" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/activity_sample_blur_radius"
-        android:gravity="left"
-        android:textColor="@android:color/white"
-        android:layout_alignParentRight="true"
-        android:id="@+id/blurRadius"
-        android:layout_above="@+id/blurRadiusSeekbar" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button"
+                android:text="@string/blur_button" />
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/blurRadiusSeekbar"
-        android:layout_above="@+id/button"
-        android:max="20" />
+        </LinearLayout>
 
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/activity_sample_blur_debug"
-        android:textColor="@android:color/white"
-        android:id="@+id/debugMode"
-        android:layout_above="@+id/downScalefactor"
-        android:layout_alignParentRight="true" />
 
-</RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

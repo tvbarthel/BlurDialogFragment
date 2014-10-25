@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent_grey">#AA666666</color>
+    <color name="action_bar">#3ca7b5</color>
 </resources>
