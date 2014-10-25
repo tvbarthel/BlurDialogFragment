@@ -276,7 +276,7 @@ public class BlurDialogEngine {
             //display blurring time directly on screen
             Rect bounds = new Rect();
             Canvas canvas1 = new Canvas(overlay);
-            paint.setColor(Color.WHITE);
+            paint.setColor(Color.BLACK);
             paint.setAntiAlias(true);
             paint.setTextSize(20.0f);
             paint.getTextBounds(blurTime, 0, blurTime.length(), bounds);
