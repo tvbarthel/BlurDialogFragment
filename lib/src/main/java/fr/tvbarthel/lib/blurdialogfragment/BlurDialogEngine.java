@@ -235,12 +235,11 @@ public class BlurDialogEngine {
         overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth() / mDownScaleFactor),
                 (int) ((view.getMeasuredHeight() - topOffset) / mDownScaleFactor), Bitmap.Config.RGB_565);
 
-        /**
-         * Padding must be added for rendering on pre HONEYCOMB
-         */
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+                || mHoldingActivity instanceof ActionBarActivity) {
             //add offset as top margin since actionBar height must also considered when we display
             // the blurred background. Don't want to draw on the actionBar.
+
             mBlurredBackgroundLayoutParams.setMargins(
                     0,
                     actionBarHeight,
