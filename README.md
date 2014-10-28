@@ -8,7 +8,8 @@ This project is based on android.support.v4.app.DialogFragment and android.suppo
 * [Sample app](#sample-app)
 * [Example](#example)
 * [Dependency](#dependency)
-* [Simple usage](#simple-usage)
+* [Simple usage using inheritance](#simple-usage-using-inheritance)
+* [Avoiding inheritance](#avoiding-inheritance)
 * [Benchmark](#benchmark)
 * [Known bugs](#known-bugs)
 * [RenderScript or not RenderScript](#renderscript-or-not-renderscript)
@@ -35,10 +36,10 @@ Dependency
 =======
 In order to use this library, just add a new gradle dependency : [BlurDialogFragment dependency](https://github.com/tvbarthel/maven#usage) 
 
-Simple Usage
+Simple usage using inheritance
 =======
-
-Extends BlurDialogFragment. Play with the blur radius and the down scale factor to obtain the perfect blur.
+If you are using **android.app.DialogFragment** : extends **BlurDialogFragment**. 
+Play with the blur radius and the down scale factor to obtain the perfect blur.
 
 Don't forget to enable log in order to keep on eye the perfomance.
 
@@ -62,19 +63,101 @@ public class SampleDialogFragment extends BlurDialogFragment {
 }
 ```
 
+If you are using **android.support.v4.app.DialogFragment** : extends **SupportBlurDialogFragment**. 
+Play with the blur radius and the down scale factor to obtain the perfect blur.
+
+Don't forget to enable log in order to keep on eye the perfomance.
+
+```java
+/**
+ * Simple fragment with blurring effect behind.
+ */
+public class SampleDialogFragment extends SupportBlurDialogFragment {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.debug(true);
+        this.setBlurRadius(4);
+        this.setDownScaleFactor(5.0f);
+        
+        ...
+    }
+    
+    ...
+}
+```
+
 Default values are set to : 
  ```java
     /**
      * Since image is going to be blurred, we don't care about resolution.
      * Down scale factor reduces blurring time and memory allocation.
      */
-    private static final float BLUR_DOWN_SCALE_FACTOR = 8.0f;
+    private static final float BLUR_DOWN_SCALE_FACTOR = 4.0f;
 
     /**
      * Radius used to blur the background.
      */
-    private static final int BLUR_RADIUS = 2;
+    private static final int BLUR_RADIUS = 8;
     
+```
+
+Avoiding inheritance 
+=======
+
+If you want to **avoid inheritance**, use directly the **BlurEngine**. 
+Don't forget to link the engine to the lifecycle of your DialogFragment.
+
+```java
+/**
+ * Your blur fragment directly using BlurEngine.
+ */
+public class SampleDialogFragment extends MyCustomDialogFragment {
+
+     /**
+     * Engine used to blur.
+     */
+    private BlurDialogEngine mBlurEngine;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        mBlurEngine = new BlurDialogEngine(getActivity());
+        mBlurEngine.debug(mDebugEnable);
+        mBlurEngine.setBlurRadius(8);
+        mBlurEngine.setDownScaleFactor(8f);
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBlurEngine.onResume(getRetainInstance());
+    }
+    
+     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        mBlurEngine.onDismiss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBlurEngine.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null) {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
+    
+    ...
+}
 ```
 
 Benchmark
@@ -126,6 +209,8 @@ TODO
 
 Change logs
 =======
+* 0.1.1 : Fix top offset when using Toolbar.
+* 0.1.0 : Support appcompat-v7:21.
 * 0.0.9 : Change default blur radius (8) and default down scale factor (4).
 * 0.0.8 : Fix NoClassDefFound.
 * 0.0.7 : Avoid using inheritance through BlurDialogEngine if needed.
