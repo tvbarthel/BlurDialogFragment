@@ -103,7 +103,7 @@ Default values are set to :
     
 ```
 
-Avoiding inheritance 
+Avoiding inheritance
 =======
 
 If you want to **avoid inheritance**, use directly the **BlurEngine**. 
