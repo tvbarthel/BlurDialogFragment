@@ -162,6 +162,9 @@ public class SampleDialogFragment extends MyCustomDialogFragment {
 
 Benchmark
 =======
+
+We used a Nexus 5 running a 4.4.4 stock rom for this bench.
+
 Down scale factor 8.0 & Blur Radius 8 : [Screenshot](/static/blur_8.0_8.png)
 ```javascript
 Radius : 8
@@ -198,7 +201,7 @@ RenderScript or not RenderScript
 =======
 Since ScriptIntrinsicBlur seems to doens't work with RGB_565 Bitmap (used to reduce by half Bitmap allocation) I keep thinking about using RenderScript for applying blur effect.
 
-Find more information on the [original thread](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595)
+Find more information on the [memory trace](http://tvbarthel.github.io/blur-dialog-fragment.html) and on the [execution time](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595).
 
 
 
