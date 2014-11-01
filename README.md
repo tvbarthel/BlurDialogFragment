@@ -3,7 +3,7 @@ BlurDialogFragment
 
 This project allows to display DialogFragment with a burring effect behind. The blurring part is achieved through FastBlur algorithm thanks to the impressive work of Pavlo Dudka (cf [Special Thanks](https://github.com/tvbarthel/BlurDialogFragment/#special-thanks-to-)). 
 
-This project is based on android.support.v4.app.DialogFragment and android.support.v7.app.ActionBarActivity.
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-BlurDialogFragment-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1064)
 
 * [Sample app](#sample-app)
 * [Example](#example)
