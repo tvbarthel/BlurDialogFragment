@@ -252,7 +252,6 @@ public class BlurDialogEngine {
             mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
         }
 
-
         //scale and draw background view on the canvas overlay
         Canvas canvas = new Canvas(overlay);
         Paint paint = new Paint();
