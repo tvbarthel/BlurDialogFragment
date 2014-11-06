@@ -1,5 +1,6 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +18,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -99,6 +102,13 @@ public class BlurDialogEngine {
     public void onResume(boolean retainedInstance) {
         if (mBlurredBackgroundView == null || retainedInstance) {
             mBluringTask = new BlurAsyncTask();
+            mBluringTask.execute();
+        }
+    }
+
+    public void onResume(boolean retainedInstance, final View viewToHide) {
+        if (mBlurredBackgroundView == null || retainedInstance) {
+            mBluringTask = new BlurAsyncTask(viewToHide);
             mBluringTask.execute();
         }
     }
@@ -312,6 +322,15 @@ public class BlurDialogEngine {
 
         private View mBackgroundView;
 
+        private View viewToHide;
+
+        public BlurAsyncTask() {
+        }
+
+        public BlurAsyncTask(View viewToHide) {
+            this.viewToHide = viewToHide;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -363,10 +382,32 @@ public class BlurDialogEngine {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            mBlurredBackgroundView.setAlpha(0f);
             mHoldingActivity.getWindow().addContentView(
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );
+            mBlurredBackgroundView.animate().alpha(1f).setDuration(600).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    viewToHide.animate().alpha(1f).setDuration(800).start();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            }).start();
 
             mBackgroundView = null;
             mBackground = null;

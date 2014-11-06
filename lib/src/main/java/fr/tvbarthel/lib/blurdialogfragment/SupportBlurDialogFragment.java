@@ -3,6 +3,7 @@ package fr.tvbarthel.lib.blurdialogfragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 
 /**
  * Encapsulate dialog behavior with blur effect for
@@ -65,7 +66,9 @@ public class SupportBlurDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mBlurEngine.onResume(getRetainInstance());
+        final View decorView = getDialog().getWindow().getDecorView();
+        decorView.setAlpha(0f);
+        mBlurEngine.onResume(getRetainInstance(), decorView);
     }
 
 
