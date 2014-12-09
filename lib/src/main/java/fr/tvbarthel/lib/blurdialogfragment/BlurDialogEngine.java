@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -99,6 +100,11 @@ public class BlurDialogEngine {
      * Holding activity.
      */
     private Activity mHoldingActivity;
+
+    /**
+     * Allow to use a toolbar without set it as action bar.
+     */
+    private Toolbar mToolbar;
 
     /**
      * Duration used to animate in and out the blurred image.
@@ -215,6 +221,15 @@ public class BlurDialogEngine {
     }
 
     /**
+     * Set a toolbar which isn't set as action bar.
+     *
+     * @param toolbar toolbar.
+     */
+    public void setToolbar(Toolbar toolbar) {
+        mToolbar = toolbar;
+    }
+
+    /**
      * Blur the given bitmap and add it to the activity.
      *
      * @param bkg  should be a bitmap of the background.
@@ -274,7 +289,7 @@ public class BlurDialogEngine {
         }
 
         // check if status bar is translucent.
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && isStatusBarTranslucent()) {
             // add the status bar height as top margin.
             mBlurredBackgroundLayoutParams.setMargins(0
@@ -328,7 +343,9 @@ public class BlurDialogEngine {
     private int getActionBarHeight() {
         int actionBarHeight = 0;
         try {
-            if (mHoldingActivity instanceof ActionBarActivity) {
+            if (mToolbar != null) {
+                actionBarHeight = mToolbar.getHeight();
+            } else if (mHoldingActivity instanceof ActionBarActivity) {
                 ActionBar supportActionBar
                         = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
                 if (supportActionBar != null) {
@@ -409,7 +426,6 @@ public class BlurDialogEngine {
             mBlurredBackgroundView = null;
         }
     }
-
 
     /**
      * Async task used to process blur out of ui thread

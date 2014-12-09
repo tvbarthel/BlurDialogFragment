@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 /**
@@ -20,6 +21,11 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
     private BlurDialogEngine mBlurEngine;
 
     /**
+     * Allow to set a Toolbar which isn't set as actionbar.
+     */
+    private Toolbar mToolbar;
+
+    /**
      * Dimming policy.
      */
     private boolean mDimmingEffect;
@@ -29,6 +35,10 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         mBlurEngine = new BlurDialogEngine(getActivity());
+
+        if (mToolbar != null) {
+            mBlurEngine.setToolbar(mToolbar);
+        }
 
         int radius = getBlurRadius();
         if (radius <= 0) {
@@ -143,5 +153,19 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
      */
     protected boolean isDimmingEnable() {
         return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
+    }
+
+    /**
+     * Allow to set a Toolbar which isn't set as ActionBar.
+     * <p/>
+     * Must be called before onCreate.
+     *
+     * @param toolBar toolBar
+     */
+    public void setToolbar(Toolbar toolBar) {
+        mToolbar = toolBar;
+        if (mBlurEngine != null) {
+            mBlurEngine.setToolbar(toolBar);
+        }
     }
 }
