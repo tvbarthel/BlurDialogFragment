@@ -326,17 +326,6 @@ public class BlurDialogEngine {
         return result;
     }
 
-    private boolean isStatusBarTranslucent() {
-        int id = mHoldingActivity.getResources().getIdentifier("config_enableTranslucentDecor", "bool", "android");
-        if (id == 0) {
-            // not on KitKat
-        } else {
-            boolean enabled = mHoldingActivity.getResources().getBoolean(id);
-            return enabled;
-        }
-        return false;
-    }
-
     /**
      * Async task used to process blur out of ui thread
      */
