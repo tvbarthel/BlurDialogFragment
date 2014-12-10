@@ -248,7 +248,7 @@ public class BlurDialogEngine {
                 //add offset as top margin since actionBar height must also considered when we display
                 // the blurred background. Don't want to draw on the actionBar.
 
-                mBlurredBackgroundLayoutParams.setMargins(0, actionBarHeight, 0, 0);
+                mBlurredBackgroundLayoutParams.setMargins(0, statusBarHeight, 0, 0);
                 mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
             }
         } catch (NoClassDefFoundError e) {
