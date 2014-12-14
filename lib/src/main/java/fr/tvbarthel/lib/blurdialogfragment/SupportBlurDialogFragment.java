@@ -1,5 +1,6 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -119,5 +120,30 @@ public class SupportBlurDialogFragment extends DialogFragment {
         if (radius > 0) {
             mBlurEngine.setBlurRadius(radius);
         }
+    }
+
+    /**
+     * Add in and out animations on your dialog according to the res id style.
+     * <p/>
+     * Use resId = -1 for default animation.
+     * <p/>
+     * To provide a custom one, simple define a new style in your style.xml :
+     * <p/>
+     * <code>
+     * <style name="BlurDialogFragment.Default.Animation" parent="@android:style/Animation.Activity">
+     * <item name="android:windowEnterAnimation">@anim/custom_dialog_in</item>
+     * <item name="android:windowExitAnimation">@anim/custom_dialog_out</item>
+     * </style>
+     * </code>
+     *
+     * @param dialog dialog on which animations will be applied
+     * @param resId  res id of your animation style, or -1 for default one.
+     */
+    protected void addAnimations(Dialog dialog, int resId) {
+        int style = resId;
+        if (resId == -1) {
+            style = R.style.BlurDialogFragment_Default_Animation;
+        }
+        dialog.getWindow().getAttributes().windowAnimations = style;
     }
 }

@@ -30,7 +30,10 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         label.setMovementMethod(LinkMovementMethod.getInstance());
         Linkify.addLinks(label, Linkify.WEB_URLS);
         builder.setView(view);
-        return builder.create();
+
+        Dialog dialog = builder.create();
+        addAnimations(dialog, -1);
+        return dialog;
     }
 
 }

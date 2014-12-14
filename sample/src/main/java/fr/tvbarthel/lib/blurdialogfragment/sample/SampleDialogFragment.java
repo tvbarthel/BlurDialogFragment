@@ -31,6 +31,9 @@ public class SampleDialogFragment extends BlurDialogFragment {
         label.setMovementMethod(LinkMovementMethod.getInstance());
         Linkify.addLinks(label, Linkify.WEB_URLS);
         builder.setView(customView);
-        return builder.create();
+
+        Dialog dialog = builder.create();
+        addAnimations(dialog, -1);
+        return dialog;
     }
 }
