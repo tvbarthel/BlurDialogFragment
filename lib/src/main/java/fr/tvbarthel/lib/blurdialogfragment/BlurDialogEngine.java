@@ -2,6 +2,8 @@ package fr.tvbarthel.lib.blurdialogfragment;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,7 +18,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -192,8 +193,8 @@ public class BlurDialogEngine {
         long startMs = System.currentTimeMillis();
         //define layout params to the previous imageView in order to match its parent
         mBlurredBackgroundLayoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
         );
 
         //overlay used to build scaled preview and blur background
@@ -231,32 +232,34 @@ public class BlurDialogEngine {
         }
 
         final int topOffset = actionBarHeight + statusBarHeight;
+        final int bottomOffset = getNavigationBarOffset();
 
         //add offset to the source boundaries since we don't want to blur actionBar pixels
         Rect srcRect = new Rect(
                 0,
                 actionBarHeight + statusBarHeight,
                 bkg.getWidth(),
-                bkg.getHeight()
+                bkg.getHeight() - bottomOffset
         );
 
         //in order to keep the same ratio as the one which will be used for rendering, also
         //add the offset to the overlay.
-        overlay = Bitmap.createBitmap((int) (view.getMeasuredWidth() / mDownScaleFactor),
-                (int) ((view.getMeasuredHeight() - topOffset) / mDownScaleFactor), Bitmap.Config.RGB_565);
+        overlay = Bitmap.createBitmap((int) ((view.getWidth()) / mDownScaleFactor),
+                (int) ((view.getMeasuredHeight() - topOffset - bottomOffset) / mDownScaleFactor),
+                Bitmap.Config.RGB_565);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-                || mHoldingActivity instanceof ActionBarActivity) {
-            //add offset as top margin since actionBar height must also considered when we display
-            // the blurred background. Don't want to draw on the actionBar.
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+                    || mHoldingActivity instanceof ActionBarActivity) {
+                //add offset as top margin since actionBar height must also considered when we display
+                // the blurred background. Don't want to draw on the actionBar.
 
-            mBlurredBackgroundLayoutParams.setMargins(
-                    0,
-                    actionBarHeight,
-                    0,
-                    0
-            );
-            mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
+                mBlurredBackgroundLayoutParams.setMargins(0, actionBarHeight, 0, 0);
+                mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
+            }
+        } catch (NoClassDefFoundError e) {
+            // no dependency to appcompat, that means no additional top offset due to actionBar.
+            mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
         }
 
         //scale and draw background view on the canvas overlay
@@ -282,7 +285,6 @@ public class BlurDialogEngine {
             Log.d(TAG, "Blurred achieved in : " + blurTime);
             Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
                     + overlay.getRowBytes() + "ko (FastBlur)");
-
             //display blurring time directly on screen
             Rect bounds = new Rect();
             Canvas canvas1 = new Canvas(overlay);
@@ -308,6 +310,24 @@ public class BlurDialogEngine {
         int resourceId = mHoldingActivity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = mHoldingActivity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    /**
+     * Retrieve offset introduce by the navigation bar.
+     *
+     * @return bottom offset due to navigation bar.
+     */
+    private int getNavigationBarOffset() {
+        int result = 0;
+        Resources resources = mHoldingActivity.getResources();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP
+                && resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                result = resources.getDimensionPixelSize(resourceId);
+            }
         }
         return result;
     }

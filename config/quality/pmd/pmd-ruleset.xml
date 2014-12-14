@@ -9,7 +9,7 @@
     <exclude-pattern>.*/R.java</exclude-pattern>
     <exclude-pattern>.*/gen/.*</exclude-pattern>
 
-    <rule ref="rulesets/android.xml">
+    <rule ref="rulesets/java/android.xml">
         <!-- Config.LOGD deprecated in API level 4 !-->
         <exclude name="ProtectLogD" />
         <!-- Config.LOGV deprecated in API level 4 !-->
@@ -18,14 +18,14 @@
         <exclude name="CallSuperFirst" />
         <exclude name="CallSuperLast" />
     </rule>
-    <rule ref="rulesets/clone.xml" />
-    <rule ref="rulesets/finalizers.xml" />
-    <rule ref="rulesets/imports.xml" />
-    <rule ref="rulesets/logging-java.xml" />
-    <rule ref="rulesets/braces.xml" />
-    <rule ref="rulesets/strings.xml" />
-    <rule ref="rulesets/basic.xml" />
-    <rule ref="rulesets/naming.xml">
+    <rule ref="rulesets/java/clone.xml" />
+    <rule ref="rulesets/java/finalizers.xml" />
+    <rule ref="rulesets/java/imports.xml" />
+    <rule ref="rulesets/java/logging-java.xml" />
+    <rule ref="rulesets/java/braces.xml" />
+    <rule ref="rulesets/java/strings.xml" />
+    <rule ref="rulesets/java/basic.xml" />
+    <rule ref="rulesets/java/naming.xml">
         <exclude name="AbstractNaming" />
         <exclude name="LongVariable" />
         <exclude name="LongMethodName" />

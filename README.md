@@ -212,6 +212,7 @@ TODO
 
 Change logs
 =======
+* 0.1.2 : Fix bottom offset introduce by the navigation bar on Lollipop.
 * 0.1.1 : Fix top offset when using Toolbar.
 * 0.1.0 : Support appcompat-v7:21.
 * 0.0.9 : Change default blur radius (8) and default down scale factor (4).
