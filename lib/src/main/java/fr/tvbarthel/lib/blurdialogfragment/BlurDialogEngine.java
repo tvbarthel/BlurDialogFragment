@@ -20,7 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -85,6 +85,13 @@ public class BlurDialogEngine {
      */
     private Activity mHoldingActivity;
 
+    /**
+     * Duration used to animate in and out the blurred image.
+     * <p/>
+     * In milli.
+     */
+    private int mAnimationDuration;
+
 
     /**
      * Constructor.
@@ -93,6 +100,7 @@ public class BlurDialogEngine {
      */
     public BlurDialogEngine(Activity holdingActivity) {
         mHoldingActivity = holdingActivity;
+        mAnimationDuration = holdingActivity.getResources().getInteger(R.integer.blur_dialog_animation_duration);
     }
 
     /**
@@ -107,14 +115,6 @@ public class BlurDialogEngine {
         }
     }
 
-    public void onResume(boolean retainedInstance, final View viewToHide) {
-        if (mBlurredBackgroundView == null || retainedInstance) {
-            mBluringTask = new BlurAsyncTask(viewToHide);
-            mBluringTask.execute();
-        }
-    }
-
-
     /**
      * Must be linked to the original lifecycle.
      */
@@ -122,8 +122,33 @@ public class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            mBlurredBackgroundView.setVisibility(View.GONE);
-            mBlurredBackgroundView = null;
+            mBlurredBackgroundView
+                    .animate()
+                    .alpha(0f)
+                    .setDuration(mAnimationDuration)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mBlurredBackgroundView.setVisibility(View.GONE);
+                            mBlurredBackgroundView = null;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    }).start();
         }
 
         //cancel async task
@@ -342,15 +367,6 @@ public class BlurDialogEngine {
 
         private View mBackgroundView;
 
-        private View viewToHide;
-
-        public BlurAsyncTask() {
-        }
-
-        public BlurAsyncTask(View viewToHide) {
-            this.viewToHide = viewToHide;
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -407,27 +423,12 @@ public class BlurDialogEngine {
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );
-            mBlurredBackgroundView.animate().alpha(1f).setDuration(600).setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    viewToHide.animate().alpha(1f).setDuration(800).start();
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            }).start();
+            mBlurredBackgroundView
+                    .animate()
+                    .alpha(1f)
+                    .setDuration(mAnimationDuration)
+                    .setInterpolator(new LinearInterpolator())
+                    .start();
 
             mBackgroundView = null;
             mBackground = null;
