@@ -269,9 +269,9 @@ public class BlurDialogEngine {
 
         //in order to keep the same ratio as the one which will be used for rendering, also
         //add the offset to the overlay.
-        overlay = Bitmap.createBitmap((int) ((view.getWidth()) / mDownScaleFactor),
-                (int) ((view.getMeasuredHeight() - topOffset - bottomOffset) / mDownScaleFactor),
-                Bitmap.Config.RGB_565);
+        double height = Math.ceil((view.getMeasuredHeight() - topOffset - bottomOffset) / mDownScaleFactor);
+        double width = Math.ceil((view.getWidth() * height / (view.getMeasuredHeight() - topOffset - bottomOffset)));
+        overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
 
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
