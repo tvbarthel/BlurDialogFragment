@@ -3,6 +3,7 @@ package fr.tvbarthel.lib.blurdialogfragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
 
 /**
  * Encapsulate dialog behavior with blur effect for
@@ -36,6 +37,7 @@ public class SupportBlurDialogFragment extends DialogFragment {
      *
      */
     private boolean mDebugEnable;
+    private Toolbar toolbar;
 
     /**
      * default constructor as needed
@@ -49,6 +51,9 @@ public class SupportBlurDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         mBlurEngine = new BlurDialogEngine(getActivity());
+        if (toolbar != null) {
+            mBlurEngine.setToolbar(toolbar);
+        }
         mBlurEngine.debug(mDebugEnable);
 
         Bundle args = getArguments();
@@ -119,6 +124,13 @@ public class SupportBlurDialogFragment extends DialogFragment {
     public void setBlurRadius(int radius) {
         if (radius > 0) {
             mBlurEngine.setBlurRadius(radius);
+        }
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+        if (mBlurEngine != null) {
+            mBlurEngine.setToolbar(toolbar);
         }
     }
 }

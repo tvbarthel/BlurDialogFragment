@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 /**
  * Encapsulate dialog behavior with blur effect for app using {@link android.app.DialogFragment}.
@@ -38,6 +39,7 @@ public class BlurDialogFragment extends DialogFragment {
      *
      */
     private boolean mDebugEnable;
+    private Toolbar toolbar;
 
     /**
      * default constructor as needed
@@ -51,6 +53,9 @@ public class BlurDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         mBlurEngine = new BlurDialogEngine(getActivity());
+        if (toolbar != null) {
+            mBlurEngine.setToolbar(toolbar);
+        }
         mBlurEngine.debug(mDebugEnable);
 
         Bundle args = getArguments();
@@ -121,6 +126,13 @@ public class BlurDialogFragment extends DialogFragment {
     public void setBlurRadius(int radius) {
         if (radius > 0) {
             mBlurEngine.setBlurRadius(radius);
+        }
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+        if (mBlurEngine != null) {
+            mBlurEngine.setToolbar(toolbar);
         }
     }
 }

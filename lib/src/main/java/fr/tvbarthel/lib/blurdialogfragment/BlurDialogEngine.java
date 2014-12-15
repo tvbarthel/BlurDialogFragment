@@ -14,9 +14,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -81,6 +83,7 @@ public class BlurDialogEngine {
      * Holding activity.
      */
     private Activity mHoldingActivity;
+    private Toolbar toolbar;
 
 
     /**
@@ -193,9 +196,10 @@ public class BlurDialogEngine {
         //evaluate top offset due to action bar
         int actionBarHeight = 0;
         try {
-            if (mHoldingActivity instanceof ActionBarActivity) {
-                ActionBar supportActionBar
-                        = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
+            if (toolbar != null) {
+                actionBarHeight = toolbar.getHeight();
+            } else if (mHoldingActivity instanceof ActionBarActivity) {
+                ActionBar supportActionBar = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
                 if (supportActionBar != null) {
                     actionBarHeight = supportActionBar.getHeight();
                 }
@@ -227,7 +231,7 @@ public class BlurDialogEngine {
         //add offset to the source boundaries since we don't want to blur actionBar pixels
         Rect srcRect = new Rect(
                 0,
-                actionBarHeight + statusBarHeight,
+                topOffset,
                 bkg.getWidth(),
                 bkg.getHeight() - bottomOffset
         );
@@ -244,7 +248,7 @@ public class BlurDialogEngine {
                 //add offset as top margin since actionBar height must also considered when we display
                 // the blurred background. Don't want to draw on the actionBar.
 
-                mBlurredBackgroundLayoutParams.setMargins(0, actionBarHeight, 0, 0);
+                mBlurredBackgroundLayoutParams.setMargins(0, statusBarHeight, 0, 0);
                 mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
             }
         } catch (NoClassDefFoundError e) {
@@ -322,7 +326,6 @@ public class BlurDialogEngine {
         return result;
     }
 
-
     /**
      * Async task used to process blur out of ui thread
      */
@@ -391,5 +394,9 @@ public class BlurDialogEngine {
             mBackgroundView = null;
             mBackground = null;
         }
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
     }
 }
