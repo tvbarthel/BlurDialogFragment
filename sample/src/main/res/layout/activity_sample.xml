@@ -55,6 +55,20 @@
                 android:id="@+id/blurRadiusSeekbar"
                 android:max="20" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/activity_sample_fade_duration"
+                android:gravity="left"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/fadeDuration" />
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fadeDurationSeekbar"
+                android:max="1000" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

@@ -84,7 +84,7 @@ public class BlurDialogEngine {
     /**
      * Duration of the fade in / fade out animation.
      */
-    private long mFadeDuration = android.R.integer.config_mediumAnimTime;
+    private long mFadeDuration = 400;
 
     /**
      * Holding activity.
@@ -181,7 +181,7 @@ public class BlurDialogEngine {
     }
 
     /**
-     * Set duration of fade in / fade out animations.
+     * Set duration of fade in / fade out animations in milliseconds.
      * Has no effect below API level 11.
      * @param duration
      */
@@ -416,11 +416,19 @@ public class BlurDialogEngine {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     private void fadeIn() {
         mBlurredBackgroundView.setAlpha(0f);
-        mBlurredBackgroundView
-                .animate()
-                .setDuration(mFadeDuration)
-                .alpha(1)
-                .setListener(null);
+        mBlurredBackgroundView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mBlurredBackgroundView.removeOnLayoutChangeListener(this);
+                mBlurredBackgroundView
+                        .animate()
+                        .setDuration(mFadeDuration)
+                        .alpha(1)
+                        .setListener(null);
+
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)

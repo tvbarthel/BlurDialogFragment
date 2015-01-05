@@ -41,6 +41,16 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
     TextView mDownScaleFactorTextView;
 
     /**
+     * Seek bar used to change the fade duration.
+     */
+    TextView mFadeDurationTextView;
+
+    /**
+     * TextView used to display the current fade duration.
+     */
+    SeekBar mFadeDurationSeekbar;
+
+    /**
      * Checkbox used to enable or disable debug mode.
      */
     CheckBox mDebugMode;
@@ -49,6 +59,11 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
      * Prefix used to explain down scale factor.
      */
     String mDownScalePrefix;
+
+    /**
+     * Prefix used to explain fade duration.
+     */
+    String mFadeDurationPrefix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +75,8 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mBlurRadiusSeekbar = ((SeekBar) findViewById(R.id.blurRadiusSeekbar));
         mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
+        mFadeDurationTextView = ((TextView) findViewById(R.id.fadeDuration));
+        mFadeDurationSeekbar = ((SeekBar) findViewById(R.id.fadeDurationSeekbar));
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
 
         setUpView();
@@ -99,6 +116,10 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
                         SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
                         mDownScaleFactorSeekbar.getProgress()
                 );
+                args.putLong(
+                        SupportBlurDialogFragment.BUNDLE_KEY_FADE_DURATION,
+                        mFadeDurationSeekbar.getProgress()
+                );
                 fragment.setArguments(args);
                 fragment.debug(mDebugMode.isChecked());
                 fragment.show(getSupportFragmentManager(), "blur_sample");
@@ -116,7 +137,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mBlurRadiusSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBlurRadiusTextView.setText(mBlurPrefix + progress);
+                mBlurRadiusTextView.setText(mBlurPrefix + " " + progress);
             }
 
             @Override
@@ -133,7 +154,24 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDownScaleFactorSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mDownScaleFactorTextView.setText(mDownScalePrefix + progress);
+                mDownScaleFactorTextView.setText(mDownScalePrefix + " " + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        mFadeDurationSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mFadeDurationTextView.setText(mFadeDurationPrefix + " " + progress + "ms");
             }
 
             @Override
@@ -149,9 +187,11 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
 
         mBlurPrefix = getString(R.string.activity_sample_blur_radius);
         mDownScalePrefix = getString(R.string.activity_sample_down_scale_factor);
+        mFadeDurationPrefix = getString(R.string.activity_sample_fade_duration);
 
         //set default blur radius to 8.
         mBlurRadiusSeekbar.setProgress(8);
         mDownScaleFactorSeekbar.setProgress(4);
+        mFadeDurationSeekbar.setProgress(400);
     }
 }
