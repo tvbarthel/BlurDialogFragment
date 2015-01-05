@@ -1,5 +1,8 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -17,6 +20,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -78,10 +82,14 @@ public class BlurDialogEngine {
     private int mBlurRadius = BLUR_RADIUS;
 
     /**
+     * Duration of the fade in / fade out animation.
+     */
+    private long mFadeDuration = android.R.integer.config_mediumAnimTime;
+
+    /**
      * Holding activity.
      */
     private Activity mHoldingActivity;
-
 
     /**
      * Constructor.
@@ -109,11 +117,10 @@ public class BlurDialogEngine {
      * Must be linked to the original lifecycle.
      */
     public void onDismiss() {
-        //remove blurred background and clear memory, could be null if dismissed before blur effect
-        //processing ends
-        if (mBlurredBackgroundView != null) {
-            mBlurredBackgroundView.setVisibility(View.GONE);
-            mBlurredBackgroundView = null;
+        if (Build.VERSION.SDK_INT >= 11 && mFadeDuration > 0) {
+            fadeOut();
+        } else {
+            removeBlurredView();
         }
 
         //cancel async task
@@ -171,6 +178,15 @@ public class BlurDialogEngine {
         } else {
             mBlurRadius = 0;
         }
+    }
+
+    /**
+     * Set duration of fade in / fade out animations.
+     * Has no effect below API level 11.
+     * @param duration
+     */
+    public void setFadeDuration(long duration) {
+        mFadeDuration = duration;
     }
 
     /**
@@ -388,8 +404,53 @@ public class BlurDialogEngine {
                     mBlurredBackgroundLayoutParams
             );
 
+            if (Build.VERSION.SDK_INT >= 11 && mFadeDuration > 0) {
+                fadeIn();
+            }
+
             mBackgroundView = null;
             mBackground = null;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    private void fadeIn() {
+        mBlurredBackgroundView.setAlpha(0f);
+        mBlurredBackgroundView
+                .animate()
+                .setDuration(mFadeDuration)
+                .alpha(1)
+                .setListener(null);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    private void fadeOut() {
+        mBlurredBackgroundView
+                .animate()
+                .setDuration(mFadeDuration)
+                .alpha(0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        removeBlurredView();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        super.onAnimationCancel(animation);
+                        removeBlurredView();
+                    }
+                });
+    }
+
+    private void removeBlurredView() {
+        if (mBlurredBackgroundView != null) {
+            ViewGroup parent = (ViewGroup) mBlurredBackgroundView.getParent();
+            if (parent != null) {
+                parent.removeView(mBlurredBackgroundView);
+            }
+            mBlurredBackgroundView = null;
         }
     }
 }
