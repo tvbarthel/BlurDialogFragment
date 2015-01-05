@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -112,7 +113,10 @@ public class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            mBlurredBackgroundView.setVisibility(View.GONE);
+            ViewGroup parentGroup = (ViewGroup)mBlurredBackgroundView.getParent();
+            if (parentGroup != null) {
+                parentGroup.removeView(mBlurredBackgroundView);
+            }
             mBlurredBackgroundView = null;
         }
 
