@@ -23,6 +23,11 @@ public class SupportBlurDialogFragment extends DialogFragment {
     public static final String BUNDLE_KEY_BLUR_RADIUS = "bundle_key_blur_radius";
 
     /**
+     * Bundle key used to start the blur dialog with a given fade duration.
+     */
+    public static final String BUNDLE_KEY_FADE_DURATION = "bundle_key_fade_duration";
+
+    /**
      * Log cat
      */
     private static final String TAG = SupportBlurDialogFragment.class.getSimpleName();
@@ -58,6 +63,9 @@ public class SupportBlurDialogFragment extends DialogFragment {
             }
             if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
                 mBlurEngine.setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
+            }
+            if (args.containsKey(BUNDLE_KEY_FADE_DURATION)) {
+                mBlurEngine.setFadeDuration(args.getLong(BUNDLE_KEY_FADE_DURATION));
             }
         }
     }

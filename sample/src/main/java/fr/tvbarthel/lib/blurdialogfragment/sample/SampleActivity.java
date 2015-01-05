@@ -43,6 +43,16 @@ public class SampleActivity extends Activity implements View.OnClickListener {
     TextView mDownScaleFactorTextView;
 
     /**
+     * Seek bar used to change the fade duration.
+     */
+    TextView mFadeDurationTextView;
+
+    /**
+     * TextView used to display the current fade duration.
+     */
+    SeekBar mFadeDurationSeekbar;
+
+    /**
      * Checkbox used to enable or disable debug mode.
      */
     CheckBox mDebugMode;
@@ -51,6 +61,11 @@ public class SampleActivity extends Activity implements View.OnClickListener {
      * Prefix used to explain down scale factor.
      */
     String mDownScalePrefix;
+
+    /**
+     * Prefix used to explain fade duration.
+     */
+    String mFadeDurationPrefix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +77,8 @@ public class SampleActivity extends Activity implements View.OnClickListener {
         mBlurRadiusSeekbar = ((SeekBar) findViewById(R.id.blurRadiusSeekbar));
         mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
+        mFadeDurationTextView = ((TextView) findViewById(R.id.fadeDuration));
+        mFadeDurationSeekbar = ((SeekBar) findViewById(R.id.fadeDurationSeekbar));
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
 
         setUpView();
@@ -100,6 +117,10 @@ public class SampleActivity extends Activity implements View.OnClickListener {
                 args.putFloat(
                         SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
                         mDownScaleFactorSeekbar.getProgress()
+                );
+                args.putFloat(
+                        SupportBlurDialogFragment.BUNDLE_KEY_FADE_DURATION,
+                        mFadeDurationSeekbar.getProgress()
                 );
                 fragment.setArguments(args);
                 fragment.debug(mDebugMode.isChecked());
@@ -149,11 +170,30 @@ public class SampleActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        mFadeDurationSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mFadeDurationTextView.setText(mFadeDurationPrefix + progress + "ms");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         mBlurPrefix = getString(R.string.activity_sample_blur_radius);
         mDownScalePrefix = getString(R.string.activity_sample_down_scale_factor);
+        mFadeDurationPrefix = getString(R.string.activity_sample_fade_duration);
 
         //set default blur radius to 8.
         mBlurRadiusSeekbar.setProgress(8);
         mDownScaleFactorSeekbar.setProgress(4);
+        mFadeDurationSeekbar.setProgress(400);
     }
 }
