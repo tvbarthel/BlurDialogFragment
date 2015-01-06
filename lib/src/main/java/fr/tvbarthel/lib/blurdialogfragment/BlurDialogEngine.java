@@ -65,7 +65,7 @@ public class BlurDialogEngine {
     /**
      * Used to enable or disable debug mod.
      */
-    private boolean mDebudEnable = false;
+    private boolean mDebugEnable = false;
 
     /**
      * Factor used to down scale background. High quality isn't necessary
@@ -140,7 +140,7 @@ public class BlurDialogEngine {
      * @param enable true to display log in LogCat.
      */
     public void debug(boolean enable) {
-        mDebudEnable = enable;
+        mDebugEnable = enable;
     }
 
     /**
@@ -270,7 +270,7 @@ public class BlurDialogEngine {
         //apply fast blur on overlay
         overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
 
-        if (mDebudEnable) {
+        if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
 
             //display information in LogCat
