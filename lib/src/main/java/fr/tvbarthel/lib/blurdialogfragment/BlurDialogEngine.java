@@ -1,8 +1,10 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +17,7 @@ import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +116,7 @@ public class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            ViewGroup parentGroup = (ViewGroup)mBlurredBackgroundView.getParent();
+            ViewGroup parentGroup = (ViewGroup) mBlurredBackgroundView.getParent();
             if (parentGroup != null) {
                 parentGroup.removeView(mBlurredBackgroundView);
             }
@@ -195,28 +198,8 @@ public class BlurDialogEngine {
         Bitmap overlay = null;
 
         //evaluate top offset due to action bar
-        int actionBarHeight = 0;
-        try {
-            if (mHoldingActivity instanceof ActionBarActivity) {
-                ActionBar supportActionBar
-                        = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
-                if (supportActionBar != null) {
-                    actionBarHeight = supportActionBar.getHeight();
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
-                if (actionBar != null) {
-                    actionBarHeight = actionBar.getHeight();
-                }
-            }
-        } catch (NoClassDefFoundError e) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
-                if (actionBar != null) {
-                    actionBarHeight = actionBar.getHeight();
-                }
-            }
-        }
+        int actionBarHeight = getActionBarHeight();
+
         //evaluate top offset due to status bar
         int statusBarHeight = 0;
         if ((mHoldingActivity.getWindow().getAttributes().flags
@@ -231,7 +214,7 @@ public class BlurDialogEngine {
         //add offset to the source boundaries since we don't want to blur actionBar pixels
         Rect srcRect = new Rect(
                 0,
-                actionBarHeight + statusBarHeight,
+                topOffset,
                 bkg.getWidth(),
                 bkg.getHeight() - bottomOffset
         );
@@ -256,6 +239,14 @@ public class BlurDialogEngine {
             mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
         }
 
+        // check if status bar is translucent.
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
+                && isStatusBarTranslucent()) {
+            // add the status bar height as top margin.
+            mBlurredBackgroundLayoutParams.setMargins(0
+                    , mBlurredBackgroundLayoutParams.topMargin + statusBarHeight, 0, 0);
+        }
+
         //scale and draw background view on the canvas overlay
         Canvas canvas = new Canvas(overlay);
         Paint paint = new Paint();
@@ -264,7 +255,8 @@ public class BlurDialogEngine {
         //build drawing destination boundaries
         final RectF destRect = new RectF(0, 0, overlay.getWidth(), overlay.getHeight());
 
-        //draw background from source area in source background to the destination area on the overlay
+        //draw background from source area in source background to the destination area
+        // on the overlay
         canvas.drawBitmap(bkg, srcRect, destRect, paint);
 
         //apply fast blur on overlay
@@ -295,13 +287,45 @@ public class BlurDialogEngine {
     }
 
     /**
+     * Retrieve action bar height.
+     *
+     * @return action bar height in px.
+     */
+    private int getActionBarHeight() {
+        int actionBarHeight = 0;
+        try {
+            if (mHoldingActivity instanceof ActionBarActivity) {
+                ActionBar supportActionBar
+                        = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
+                if (supportActionBar != null) {
+                    actionBarHeight = supportActionBar.getHeight();
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
+                if (actionBar != null) {
+                    actionBarHeight = actionBar.getHeight();
+                }
+            }
+        } catch (NoClassDefFoundError e) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                android.app.ActionBar actionBar = mHoldingActivity.getActionBar();
+                if (actionBar != null) {
+                    actionBarHeight = actionBar.getHeight();
+                }
+            }
+        }
+        return actionBarHeight;
+    }
+
+    /**
      * retrieve status bar height in px
      *
      * @return status bar height in px
      */
     private int getStatusBarHeight() {
         int result = 0;
-        int resourceId = mHoldingActivity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = mHoldingActivity.getResources()
+                .getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = mHoldingActivity.getResources().getDimensionPixelSize(resourceId);
         }
@@ -324,6 +348,19 @@ public class BlurDialogEngine {
             }
         }
         return result;
+    }
+
+    /**
+     * Used to check if the status bar is translucent.
+     *
+     * @return true if the status bar is translucent.
+     */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private boolean isStatusBarTranslucent() {
+        TypedValue typedValue = new TypedValue();
+        int[] attribute = new int[]{android.R.attr.windowTranslucentStatus};
+        TypedArray array = mHoldingActivity.obtainStyledAttributes(typedValue.resourceId, attribute);
+        return array.getBoolean(0, false);
     }
 
 
