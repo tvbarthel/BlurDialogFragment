@@ -1,8 +1,11 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.WindowManager;
 
 /**
  * Encapsulate dialog behavior with blur effect for
@@ -60,6 +63,14 @@ public class SupportBlurDialogFragment extends DialogFragment {
                 mBlurEngine.setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
             }
         }
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        return dialog;
     }
 
     @Override
