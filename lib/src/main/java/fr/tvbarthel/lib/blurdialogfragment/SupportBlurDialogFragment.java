@@ -3,7 +3,6 @@ package fr.tvbarthel.lib.blurdialogfragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.WindowManager;
 
@@ -65,12 +64,13 @@ public class SupportBlurDialogFragment extends DialogFragment {
         }
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        return dialog;
+    public void onStart() {
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+        super.onStart();
     }
 
     @Override
