@@ -18,37 +18,42 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
     /**
      * Seek bar used to change the blur radius.
      */
-    SeekBar mBlurRadiusSeekbar;
+    private SeekBar mBlurRadiusSeekbar;
 
     /**
      * TextView used to display the current blur radius.
      */
-    TextView mBlurRadiusTextView;
+    private TextView mBlurRadiusTextView;
 
     /**
      * Prefix used to explain blur radius.
      */
-    String mBlurPrefix;
+    private String mBlurPrefix;
 
     /**
      * Seek bar used to change the down scale factor.
      */
-    SeekBar mDownScaleFactorSeekbar;
+    private SeekBar mDownScaleFactorSeekbar;
 
     /**
      * TextView used to display the current down scale factor.
      */
-    TextView mDownScaleFactorTextView;
+    private TextView mDownScaleFactorTextView;
 
     /**
      * Checkbox used to enable or disable debug mode.
      */
-    CheckBox mDebugMode;
+    private CheckBox mDebugMode;
 
     /**
      * Prefix used to explain down scale factor.
      */
-    String mDownScalePrefix;
+    private String mDownScalePrefix;
+
+    /**
+     * Checkbox used to enable / disable dimming effect.
+     */
+    private CheckBox mDimmingEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
+        mDimmingEnable = ((CheckBox) findViewById(R.id.dimmingEnable));
 
         setUpView();
     }
@@ -98,6 +104,10 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
                 args.putFloat(
                         SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
                         mDownScaleFactorSeekbar.getProgress()
+                );
+                args.putBoolean(
+                        SupportBlurDialogFragment.BUNDLE_KEY_DIMMING,
+                        mDimmingEnable.isChecked()
                 );
                 fragment.setArguments(args);
                 fragment.debug(mDebugMode.isChecked());

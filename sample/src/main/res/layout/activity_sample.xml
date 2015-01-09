@@ -55,6 +55,13 @@
                 android:id="@+id/blurRadiusSeekbar"
                 android:max="20" />
 
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_sample_blur_dimming"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/dimmingEnable" />
+
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

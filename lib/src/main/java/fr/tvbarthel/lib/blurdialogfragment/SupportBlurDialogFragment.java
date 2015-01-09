@@ -25,6 +25,11 @@ public class SupportBlurDialogFragment extends DialogFragment {
     public static final String BUNDLE_KEY_BLUR_RADIUS = "bundle_key_blur_radius";
 
     /**
+     * Bundle key used to start the blur dialog with a given dimming effect policy.
+     */
+    public static final String BUNDLE_KEY_DIMMING = "bundle_key_dimming_effect";
+
+    /**
      * Log cat
      */
     private static final String TAG = SupportBlurDialogFragment.class.getSimpleName();
@@ -33,6 +38,11 @@ public class SupportBlurDialogFragment extends DialogFragment {
      * Engine used to blur.
      */
     private BlurDialogEngine mBlurEngine;
+
+    /**
+     * Dimming policy.
+     */
+    private boolean mDimmingEffect;
 
     /**
      *
@@ -61,13 +71,16 @@ public class SupportBlurDialogFragment extends DialogFragment {
             if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
                 mBlurEngine.setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
             }
+            if (args.containsKey(BUNDLE_KEY_DIMMING)) {
+                mDimmingEffect = args.getBoolean(BUNDLE_KEY_DIMMING, false);
+            }
         }
     }
 
     @Override
     public void onStart() {
         Dialog dialog = getDialog();
-        if (dialog != null) {
+        if (!mDimmingEffect && dialog != null) {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         }
         super.onStart();
@@ -131,5 +144,16 @@ public class SupportBlurDialogFragment extends DialogFragment {
         if (radius > 0) {
             mBlurEngine.setBlurRadius(radius);
         }
+    }
+
+    /**
+     * Enable or disable the dimming effect.
+     * <p/>
+     * Disabled by default.
+     *
+     * @param enable true to enable the dimming effect.
+     */
+    public void enableDimming(boolean enable) {
+        mDimmingEffect = enable;
     }
 }
