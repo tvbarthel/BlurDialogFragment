@@ -1,6 +1,7 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -131,29 +132,17 @@ public class BlurDialogEngine {
                     .alpha(0f)
                     .setDuration(mAnimationDuration)
                     .setInterpolator(new AccelerateInterpolator())
-                    .setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
+                    .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            ViewGroup parentGroup = (ViewGroup) mBlurredBackgroundView.getParent();
-                            if (parentGroup != null) {
-                                parentGroup.removeView(mBlurredBackgroundView);
-                            }
-                            mBlurredBackgroundView = null;
+                            super.onAnimationEnd(animation);
+                            removeBlurredView();
                         }
 
                         @Override
                         public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
+                            super.onAnimationCancel(animation);
+                            removeBlurredView();
                         }
                     }).start();
         }
@@ -396,6 +385,19 @@ public class BlurDialogEngine {
         int[] attribute = new int[]{android.R.attr.windowTranslucentStatus};
         TypedArray array = mHoldingActivity.obtainStyledAttributes(typedValue.resourceId, attribute);
         return array.getBoolean(0, false);
+    }
+
+    /**
+     * Removed the blurred view from the view hierarchy.
+     */
+    private void removeBlurredView() {
+        if (mBlurredBackgroundView != null) {
+            ViewGroup parent = (ViewGroup) mBlurredBackgroundView.getParent();
+            if (parent != null) {
+                parent.removeView(mBlurredBackgroundView);
+            }
+            mBlurredBackgroundView = null;
+        }
     }
 
 
