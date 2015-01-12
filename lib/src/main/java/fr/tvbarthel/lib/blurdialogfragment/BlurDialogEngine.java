@@ -39,20 +39,30 @@ import android.widget.ImageView;
 public class BlurDialogEngine {
 
     /**
-     * Log cat
-     */
-    private static final String TAG = BlurDialogEngine.class.getSimpleName();
-
-    /**
      * Since image is going to be blurred, we don't care about resolution.
      * Down scale factor to reduce blurring time and memory allocation.
      */
-    private static final float BLUR_DOWN_SCALE_FACTOR = 4.0f;
+    static final float DEFAULT_BLUR_DOWN_SCALE_FACTOR = 4.0f;
 
     /**
      * Radius used to blur the background
      */
-    private static final int BLUR_RADIUS = 8;
+    static final int DEFAULT_BLUR_RADIUS = 8;
+
+    /**
+     * Default dimming policy.
+     */
+    static final boolean DEFAULT_DIMMING_POLICY = false;
+
+    /**
+     * Default debug policy.
+     */
+    static final boolean DEFAULT_DEBUG_POLICY = false;
+
+    /**
+     * Log cat
+     */
+    private static final String TAG = BlurDialogEngine.class.getSimpleName();
 
     /**
      * Image view used to display blurred background.
@@ -78,12 +88,12 @@ public class BlurDialogEngine {
      * Factor used to down scale background. High quality isn't necessary
      * since the background will be blurred.
      */
-    private float mDownScaleFactor = BLUR_DOWN_SCALE_FACTOR;
+    private float mDownScaleFactor = DEFAULT_BLUR_DOWN_SCALE_FACTOR;
 
     /**
      * Radius used for fast blur algorithm.
      */
-    private int mBlurRadius = BLUR_RADIUS;
+    private int mBlurRadius = DEFAULT_BLUR_RADIUS;
 
     /**
      * Holding activity.
@@ -174,7 +184,7 @@ public class BlurDialogEngine {
      * Apply custom down scale factor.
      * <p/>
      * By default down scale factor is set to
-     * {@link BlurDialogEngine#BLUR_DOWN_SCALE_FACTOR}
+     * {@link BlurDialogEngine#DEFAULT_BLUR_DOWN_SCALE_FACTOR}
      * <p/>
      * Higher down scale factor will increase blurring speed but reduce final rendering quality.
      *
@@ -192,7 +202,7 @@ public class BlurDialogEngine {
      * Apply custom blur radius.
      * <p/>
      * By default blur radius is set to
-     * {@link BlurDialogEngine#BLUR_RADIUS}
+     * {@link BlurDialogEngine#DEFAULT_BLUR_RADIUS}
      *
      * @param radius custom radius used to blur.
      */
