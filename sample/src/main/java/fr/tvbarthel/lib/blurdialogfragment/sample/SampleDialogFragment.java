@@ -40,8 +40,6 @@ public class SampleDialogFragment extends BlurDialogFragment {
      */
     private static final String BUNDLE_KEY_DEBUG = "bundle_key_debug_effect";
 
-    private View view;
-
     private int mRadius;
     private float mDownScaleFactor;
     private boolean mDimming;
@@ -104,15 +102,12 @@ public class SampleDialogFragment extends BlurDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        view = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment, null);
         TextView label = ((TextView) view.findViewById(R.id.textView));
         label.setMovementMethod(LinkMovementMethod.getInstance());
         Linkify.addLinks(label, Linkify.WEB_URLS);
         builder.setView(view);
-
-        Dialog dialog = builder.create();
-        addAnimations(dialog, -1);
-        return dialog;
+        return builder.create();
     }
 
     @Override

@@ -52,8 +52,19 @@ public abstract class BlurDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         Dialog dialog = getDialog();
-        if (!mDimmingEffect && dialog != null) {
-            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        if (dialog != null) {
+
+            // enable or disable dimming effect.
+            if (!mDimmingEffect) {
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            }
+
+            // add default fade to the dialog if no window animation has been set.
+            int currentAnimation = dialog.getWindow().getAttributes().windowAnimations;
+            if (currentAnimation == 0) {
+                dialog.getWindow().getAttributes().windowAnimations
+                        = R.style.BlurDialogFragment_Default_Animation;
+            }
         }
         super.onStart();
     }
@@ -135,30 +146,5 @@ public abstract class BlurDialogFragment extends DialogFragment {
      */
     protected boolean isDimmingEnable() {
         return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
-    }
-
-    /**
-     * Add in and out animations on your dialog according to the res id style.
-     * <p/>
-     * Use resId = -1 for default animation.
-     * <p/>
-     * To provide a custom one, simple define a new style in your style.xml :
-     * <p/>
-     * <code>
-     * <style name="BlurDialogFragment.Default.Animation" parent="@android:style/Animation.Activity">
-     * <item name="android:windowEnterAnimation">@anim/custom_dialog_in</item>
-     * <item name="android:windowExitAnimation">@anim/custom_dialog_out</item>
-     * </style>
-     * </code>
-     *
-     * @param dialog dialog on which animations will be applied
-     * @param resId  res id of your animation style, or -1 for default one.
-     */
-    protected void addAnimations(Dialog dialog, int resId) {
-        int style = resId;
-        if (resId == -1) {
-            style = R.style.BlurDialogFragment_Default_Animation;
-        }
-        dialog.getWindow().getAttributes().windowAnimations = style;
     }
 }
