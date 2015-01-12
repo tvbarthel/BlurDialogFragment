@@ -17,11 +17,6 @@ import android.view.WindowManager;
 public abstract class BlurDialogFragment extends DialogFragment {
 
     /**
-     * Log cat
-     */
-    private static final String TAG = BlurDialogFragment.class.getSimpleName();
-
-    /**
      * Engine used to blur.
      */
     private BlurDialogEngine mBlurEngine;
