@@ -9,4 +9,8 @@
     <suppress files="BuildConfig.java" checks="[a-zA-Z0-9]*" />
     <suppress files="FastBlurHelper"
         checks="InnerAssignmentCheck|MultipleVariableDeclarationsCheck|MethodLengthCheck" />
+
+    <!-- xml in comments recognized as wrong HTML !-->
+    <suppress checks="JavadocStyleCheck" files="SupportBlurDialogFragment"/>
+    <suppress checks="JavadocStyleCheck" files="BlurDialogFragment"/>
 </suppressions>
