@@ -37,7 +37,7 @@ import android.widget.ImageView;
  * <p/>
  * Simply linked all methods to the matching lifecycle ones.
  */
-public class BlurDialogEngine {
+class BlurDialogEngine {
 
     /**
      * Since image is going to be blurred, we don't care about resolution.
@@ -430,7 +430,7 @@ public class BlurDialogEngine {
     /**
      * Async task used to process blur out of ui thread
      */
-    public class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private Bitmap mBackground;
 
