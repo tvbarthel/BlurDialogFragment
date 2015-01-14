@@ -270,8 +270,8 @@ class BlurDialogEngine {
 
         //in order to keep the same ratio as the one which will be used for rendering, also
         //add the offset to the overlay.
-        double height = Math.ceil((view.getMeasuredHeight() - topOffset - bottomOffset) / mDownScaleFactor);
-        double width = Math.ceil((view.getWidth() * height / (view.getMeasuredHeight() - topOffset - bottomOffset)));
+        double height = Math.ceil((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
+        double width = Math.ceil((view.getWidth() * height / (view.getHeight() - topOffset - bottomOffset)));
         overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
 
         try {
@@ -332,6 +332,7 @@ class BlurDialogEngine {
 
         //set bitmap in an image view for final rendering
         mBlurredBackgroundView = new ImageView(mHoldingActivity);
+        mBlurredBackgroundView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), overlay));
     }
 
