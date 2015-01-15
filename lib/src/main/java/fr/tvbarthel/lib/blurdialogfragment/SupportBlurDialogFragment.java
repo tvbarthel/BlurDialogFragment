@@ -104,6 +104,20 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
     }
 
     /**
+     * Allow to set a Toolbar which isn't set as ActionBar.
+     * <p/>
+     * Must be called before onCreate.
+     *
+     * @param toolBar toolBar
+     */
+    public void setToolbar(Toolbar toolBar) {
+        mToolbar = toolBar;
+        if (mBlurEngine != null) {
+            mBlurEngine.setToolbar(toolBar);
+        }
+    }
+
+    /**
      * For inheritance purpose.
      * <p/>
      * Enable or disable debug mode.
@@ -155,17 +169,4 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
         return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
     }
 
-    /**
-     * Allow to set a Toolbar which isn't set as ActionBar.
-     * <p/>
-     * Must be called before onCreate.
-     *
-     * @param toolBar toolBar
-     */
-    public void setToolbar(Toolbar toolBar) {
-        mToolbar = toolBar;
-        if (mBlurEngine != null) {
-            mBlurEngine.setToolbar(toolBar);
-        }
-    }
 }
