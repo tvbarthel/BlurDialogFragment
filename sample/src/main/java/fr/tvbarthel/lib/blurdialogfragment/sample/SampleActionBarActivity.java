@@ -53,6 +53,11 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
      */
     private CheckBox mDimmingEnable;
 
+    /**
+     * Checkbox used to enable / disable blur effect on action bar.
+     */
+    private CheckBox mBlurredActionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +70,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
         mDimmingEnable = ((CheckBox) findViewById(R.id.dimmingEnable));
+        mBlurredActionBar = ((CheckBox) findViewById(R.id.blur_actionbar_enable));
 
         setUpView();
     }
@@ -98,7 +104,8 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
                         mBlurRadiusSeekbar.getProgress(),
                         mDownScaleFactorSeekbar.getProgress(),
                         mDimmingEnable.isChecked(),
-                        mDebugMode.isChecked()
+                        mDebugMode.isChecked(),
+                        mBlurredActionBar.isChecked()
                 );
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;

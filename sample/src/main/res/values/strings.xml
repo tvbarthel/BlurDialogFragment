@@ -10,5 +10,6 @@
     <string name="activity_sample_down_scale_factor">Down Scale Factor : </string>
     <string name="activity_sample_blur_debug">Debug enable</string>
     <string name="activity_sample_blur_dimming">Dimming enable</string>
+    <string name="activity_sample_actionbar_blurred">Apply blur effect on action bar</string>
 
 </resources>

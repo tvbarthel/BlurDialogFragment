@@ -61,6 +61,11 @@ class BlurDialogEngine {
     static final boolean DEFAULT_DEBUG_POLICY = false;
 
     /**
+     * Default action bar blurred policy.
+     */
+    static final boolean DEFAULT_ACTION_BAR_BLUR = false;
+
+    /**
      * Log cat
      */
     private static final String TAG = BlurDialogEngine.class.getSimpleName();
@@ -112,6 +117,11 @@ class BlurDialogEngine {
      * In milli.
      */
     private int mAnimationDuration;
+
+    /**
+     * Boolean used to know if the actionBar should be blurred.
+     */
+    private boolean mBlurredActionBar;
 
 
     /**
@@ -221,6 +231,17 @@ class BlurDialogEngine {
     }
 
     /**
+     * Enable / disable blurred action bar.
+     * <p/>
+     * When enabled, the action bar is blurred in addition of the content.
+     *
+     * @param enable true to blur the action bar.
+     */
+    public void setBlurActionBar(boolean enable) {
+        mBlurredActionBar = enable;
+    }
+
+    /**
      * Set a toolbar which isn't set as action bar.
      *
      * @param toolbar toolbar.
@@ -246,8 +267,13 @@ class BlurDialogEngine {
         //overlay used to build scaled preview and blur background
         Bitmap overlay = null;
 
-        //evaluate top offset due to action bar
-        int actionBarHeight = getActionBarHeight();
+        //evaluate top offset due to action bar, 0 if the actionBar should be blurred.
+        int actionBarHeight;
+        if (mBlurredActionBar) {
+            actionBarHeight = 0;
+        } else {
+            actionBarHeight = getActionBarHeight();
+        }
 
         //evaluate top offset due to status bar
         int statusBarHeight = 0;
@@ -343,6 +369,7 @@ class BlurDialogEngine {
      */
     private int getActionBarHeight() {
         int actionBarHeight = 0;
+
         try {
             if (mToolbar != null) {
                 actionBarHeight = mToolbar.getHeight();

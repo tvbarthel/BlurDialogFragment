@@ -54,6 +54,8 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
 
         mBlurEngine.debug(isDebugEnable());
 
+        mBlurEngine.setBlurActionBar(isActionBarBlurred());
+
         mDimmingEffect = isDimmingEnable();
     }
 
@@ -169,4 +171,16 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
         return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
     }
 
+    /**
+     * For inheritance purpose.
+     * <p/>
+     * Enable or disable the blur effect on the action bar.
+     * <p/>
+     * Disable by default.
+     *
+     * @return true to enable the blur effect on the action bar.
+     */
+    protected boolean isActionBarBlurred() {
+        return BlurDialogEngine.DEFAULT_ACTION_BAR_BLUR;
+    }
 }
