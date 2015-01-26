@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 /**
@@ -12,27 +13,7 @@ import android.view.WindowManager;
  * <p/>
  * All the screen behind the dialog will be blurred except the action bar.
  */
-public class SupportBlurDialogFragment extends DialogFragment {
-
-    /**
-     * Bundle key used to start the blur dialog with a given scale factor (float).
-     */
-    public static final String BUNDLE_KEY_DOWN_SCALE_FACTOR = "bundle_key_down_scale_factor";
-
-    /**
-     * Bundle key used to start the blur dialog with a given blur radius (int).
-     */
-    public static final String BUNDLE_KEY_BLUR_RADIUS = "bundle_key_blur_radius";
-
-    /**
-     * Bundle key used to start the blur dialog with a given dimming effect policy.
-     */
-    public static final String BUNDLE_KEY_DIMMING = "bundle_key_dimming_effect";
-
-    /**
-     * Log cat
-     */
-    private static final String TAG = SupportBlurDialogFragment.class.getSimpleName();
+public abstract class SupportBlurDialogFragment extends DialogFragment {
 
     /**
      * Engine used to blur.
@@ -40,48 +21,58 @@ public class SupportBlurDialogFragment extends DialogFragment {
     private BlurDialogEngine mBlurEngine;
 
     /**
+     * Allow to set a Toolbar which isn't set as actionbar.
+     */
+    private Toolbar mToolbar;
+
+    /**
      * Dimming policy.
      */
     private boolean mDimmingEffect;
-
-    /**
-     *
-     */
-    private boolean mDebugEnable;
-
-    /**
-     * default constructor as needed
-     */
-    public SupportBlurDialogFragment() {
-        mDebugEnable = false;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mBlurEngine = new BlurDialogEngine(getActivity());
-        mBlurEngine.debug(mDebugEnable);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            if (args.containsKey(BUNDLE_KEY_BLUR_RADIUS)) {
-                mBlurEngine.setBlurRadius(args.getInt(BUNDLE_KEY_BLUR_RADIUS));
-            }
-            if (args.containsKey(BUNDLE_KEY_DOWN_SCALE_FACTOR)) {
-                mBlurEngine.setDownScaleFactor(args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR));
-            }
-            if (args.containsKey(BUNDLE_KEY_DIMMING)) {
-                mDimmingEffect = args.getBoolean(BUNDLE_KEY_DIMMING, false);
-            }
+        if (mToolbar != null) {
+            mBlurEngine.setToolbar(mToolbar);
         }
+
+        int radius = getBlurRadius();
+        if (radius <= 0) {
+            throw new IllegalArgumentException("Blur radius must be strictly positive. Found : " + radius);
+        }
+        mBlurEngine.setBlurRadius(radius);
+
+        float factor = getDownScaleFactor();
+        if (factor <= 1.0) {
+            throw new IllegalArgumentException("Down scale must be strictly greater than 1.0. Found : " + factor);
+        }
+        mBlurEngine.setDownScaleFactor(factor);
+
+        mBlurEngine.debug(isDebugEnable());
+
+        mDimmingEffect = isDimmingEnable();
     }
 
     @Override
     public void onStart() {
         Dialog dialog = getDialog();
-        if (!mDimmingEffect && dialog != null) {
-            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        if (dialog != null) {
+
+            // enable or disable dimming effect.
+            if (!mDimmingEffect) {
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            }
+
+            // add default fade to the dialog if no window animation has been set.
+            int currentAnimation = dialog.getWindow().getAttributes().windowAnimations;
+            if (currentAnimation == 0) {
+                dialog.getWindow().getAttributes().windowAnimations
+                        = R.style.BlurDialogFragment_Default_Animation;
+            }
         }
         super.onStart();
     }
@@ -91,7 +82,6 @@ public class SupportBlurDialogFragment extends DialogFragment {
         super.onResume();
         mBlurEngine.onResume(getRetainInstance());
     }
-
 
     @Override
     public void onDismiss(DialogInterface dialog) {
@@ -114,46 +104,69 @@ public class SupportBlurDialogFragment extends DialogFragment {
     }
 
     /**
+     * Allow to set a Toolbar which isn't set as ActionBar.
+     * <p/>
+     * Must be called before onCreate.
+     *
+     * @param toolBar toolBar
+     */
+    public void setToolbar(Toolbar toolBar) {
+        mToolbar = toolBar;
+        if (mBlurEngine != null) {
+            mBlurEngine.setToolbar(toolBar);
+        }
+    }
+
+    /**
+     * For inheritance purpose.
+     * <p/>
      * Enable or disable debug mode.
      *
-     * @param debugEnable true if debug mode should be enabled.
+     * @return true if debug mode should be enabled.
      */
-    public void debug(boolean debugEnable) {
-        mDebugEnable = debugEnable;
+    protected boolean isDebugEnable() {
+        return BlurDialogEngine.DEFAULT_DEBUG_POLICY;
     }
 
     /**
-     * Set the down scale factor used by the {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogEngine}
+     * For inheritance purpose.
+     * <p/>
+     * Allow to customize the down scale factor.
+     * <p/>
+     * The factor down scaled factor used to reduce the size of the source image.
+     * Range :  ]1.0,infinity)
      *
-     * @param factor down scaled factor used to reduce the size of the source image.
-     *               Range :  ]0,infinity)
+     * @return customized down scaled factor.
      */
-    public void setDownScaleFactor(float factor) {
-        if (factor > 0) {
-            mBlurEngine.setDownScaleFactor(factor);
-        }
+    protected float getDownScaleFactor() {
+        return BlurDialogEngine.DEFAULT_BLUR_DOWN_SCALE_FACTOR;
     }
 
     /**
-     * Set the blur radius used by the {@link fr.tvbarthel.lib.blurdialogfragment.BlurDialogEngine}
+     * For inheritance purpose.
+     * <p/>
+     * Allow to customize the blur radius factor.
+     * <p/>
+     * radius down scaled factor used to reduce the size of the source image.
+     * Range :  [1,infinity)
      *
-     * @param radius down scaled factor used to reduce the size of the source image.
-     *               Range :  [1,infinity)
+     * @return customized blur radius.
      */
-    public void setBlurRadius(int radius) {
-        if (radius > 0) {
-            mBlurEngine.setBlurRadius(radius);
-        }
+    protected int getBlurRadius() {
+        return BlurDialogEngine.DEFAULT_BLUR_RADIUS;
     }
 
     /**
+     * For inheritance purpose.
+     * <p/>
      * Enable or disable the dimming effect.
      * <p/>
      * Disabled by default.
      *
-     * @param enable true to enable the dimming effect.
+     * @return enable true to enable the dimming effect.
      */
-    public void enableDimming(boolean enable) {
-        mDimmingEffect = enable;
+    protected boolean isDimmingEnable() {
+        return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
     }
+
 }

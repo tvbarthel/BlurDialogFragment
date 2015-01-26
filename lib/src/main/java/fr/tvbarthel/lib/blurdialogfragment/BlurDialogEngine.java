@@ -1,5 +1,7 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -16,12 +18,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -32,23 +37,33 @@ import android.widget.ImageView;
  * <p/>
  * Simply linked all methods to the matching lifecycle ones.
  */
-public class BlurDialogEngine {
-
-    /**
-     * Log cat
-     */
-    private static final String TAG = BlurDialogEngine.class.getSimpleName();
+class BlurDialogEngine {
 
     /**
      * Since image is going to be blurred, we don't care about resolution.
      * Down scale factor to reduce blurring time and memory allocation.
      */
-    private static final float BLUR_DOWN_SCALE_FACTOR = 4.0f;
+    static final float DEFAULT_BLUR_DOWN_SCALE_FACTOR = 4.0f;
 
     /**
      * Radius used to blur the background
      */
-    private static final int BLUR_RADIUS = 8;
+    static final int DEFAULT_BLUR_RADIUS = 8;
+
+    /**
+     * Default dimming policy.
+     */
+    static final boolean DEFAULT_DIMMING_POLICY = false;
+
+    /**
+     * Default debug policy.
+     */
+    static final boolean DEFAULT_DEBUG_POLICY = false;
+
+    /**
+     * Log cat
+     */
+    private static final String TAG = BlurDialogEngine.class.getSimpleName();
 
     /**
      * Image view used to display blurred background.
@@ -74,17 +89,29 @@ public class BlurDialogEngine {
      * Factor used to down scale background. High quality isn't necessary
      * since the background will be blurred.
      */
-    private float mDownScaleFactor = BLUR_DOWN_SCALE_FACTOR;
+    private float mDownScaleFactor = DEFAULT_BLUR_DOWN_SCALE_FACTOR;
 
     /**
      * Radius used for fast blur algorithm.
      */
-    private int mBlurRadius = BLUR_RADIUS;
+    private int mBlurRadius = DEFAULT_BLUR_RADIUS;
 
     /**
      * Holding activity.
      */
     private Activity mHoldingActivity;
+
+    /**
+     * Allow to use a toolbar without set it as action bar.
+     */
+    private Toolbar mToolbar;
+
+    /**
+     * Duration used to animate in and out the blurred image.
+     * <p/>
+     * In milli.
+     */
+    private int mAnimationDuration;
 
 
     /**
@@ -94,6 +121,7 @@ public class BlurDialogEngine {
      */
     public BlurDialogEngine(Activity holdingActivity) {
         mHoldingActivity = holdingActivity;
+        mAnimationDuration = holdingActivity.getResources().getInteger(R.integer.blur_dialog_animation_duration);
     }
 
     /**
@@ -108,7 +136,6 @@ public class BlurDialogEngine {
         }
     }
 
-
     /**
      * Must be linked to the original lifecycle.
      */
@@ -116,11 +143,24 @@ public class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            ViewGroup parentGroup = (ViewGroup) mBlurredBackgroundView.getParent();
-            if (parentGroup != null) {
-                parentGroup.removeView(mBlurredBackgroundView);
-            }
-            mBlurredBackgroundView = null;
+            mBlurredBackgroundView
+                    .animate()
+                    .alpha(0f)
+                    .setDuration(mAnimationDuration)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            removeBlurredView();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            super.onAnimationCancel(animation);
+                            removeBlurredView();
+                        }
+                    }).start();
         }
 
         //cancel async task
@@ -150,7 +190,7 @@ public class BlurDialogEngine {
      * Apply custom down scale factor.
      * <p/>
      * By default down scale factor is set to
-     * {@link BlurDialogEngine#BLUR_DOWN_SCALE_FACTOR}
+     * {@link BlurDialogEngine#DEFAULT_BLUR_DOWN_SCALE_FACTOR}
      * <p/>
      * Higher down scale factor will increase blurring speed but reduce final rendering quality.
      *
@@ -168,7 +208,7 @@ public class BlurDialogEngine {
      * Apply custom blur radius.
      * <p/>
      * By default blur radius is set to
-     * {@link BlurDialogEngine#BLUR_RADIUS}
+     * {@link BlurDialogEngine#DEFAULT_BLUR_RADIUS}
      *
      * @param radius custom radius used to blur.
      */
@@ -178,6 +218,15 @@ public class BlurDialogEngine {
         } else {
             mBlurRadius = 0;
         }
+    }
+
+    /**
+     * Set a toolbar which isn't set as action bar.
+     *
+     * @param toolbar toolbar.
+     */
+    public void setToolbar(Toolbar toolbar) {
+        mToolbar = toolbar;
     }
 
     /**
@@ -221,8 +270,8 @@ public class BlurDialogEngine {
 
         //in order to keep the same ratio as the one which will be used for rendering, also
         //add the offset to the overlay.
-        double height = Math.ceil((view.getMeasuredHeight() - topOffset - bottomOffset) / mDownScaleFactor);
-        double width = Math.ceil((view.getWidth() * height / (view.getMeasuredHeight() - topOffset - bottomOffset)));
+        double height = Math.ceil((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
+        double width = Math.ceil((view.getWidth() * height / (view.getHeight() - topOffset - bottomOffset)));
         overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
 
         try {
@@ -240,7 +289,7 @@ public class BlurDialogEngine {
         }
 
         // check if status bar is translucent.
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
                 && isStatusBarTranslucent()) {
             // add the status bar height as top margin.
             mBlurredBackgroundLayoutParams.setMargins(0
@@ -283,6 +332,7 @@ public class BlurDialogEngine {
 
         //set bitmap in an image view for final rendering
         mBlurredBackgroundView = new ImageView(mHoldingActivity);
+        mBlurredBackgroundView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), overlay));
     }
 
@@ -294,7 +344,9 @@ public class BlurDialogEngine {
     private int getActionBarHeight() {
         int actionBarHeight = 0;
         try {
-            if (mHoldingActivity instanceof ActionBarActivity) {
+            if (mToolbar != null) {
+                actionBarHeight = mToolbar.getHeight();
+            } else if (mHoldingActivity instanceof ActionBarActivity) {
                 ActionBar supportActionBar
                         = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
                 if (supportActionBar != null) {
@@ -363,11 +415,23 @@ public class BlurDialogEngine {
         return array.getBoolean(0, false);
     }
 
+    /**
+     * Removed the blurred view from the view hierarchy.
+     */
+    private void removeBlurredView() {
+        if (mBlurredBackgroundView != null) {
+            ViewGroup parent = (ViewGroup) mBlurredBackgroundView.getParent();
+            if (parent != null) {
+                parent.removeView(mBlurredBackgroundView);
+            }
+            mBlurredBackgroundView = null;
+        }
+    }
 
     /**
      * Async task used to process blur out of ui thread
      */
-    public class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private Bitmap mBackground;
 
@@ -424,10 +488,17 @@ public class BlurDialogEngine {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            mBlurredBackgroundView.setAlpha(0f);
             mHoldingActivity.getWindow().addContentView(
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );
+            mBlurredBackgroundView
+                    .animate()
+                    .alpha(1f)
+                    .setDuration(mAnimationDuration)
+                    .setInterpolator(new LinearInterpolator())
+                    .start();
 
             mBackgroundView = null;
             mBackground = null;

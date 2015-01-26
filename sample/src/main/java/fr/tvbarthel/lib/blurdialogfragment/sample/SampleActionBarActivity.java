@@ -10,8 +10,6 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
-
 
 public class SampleActionBarActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -95,22 +93,13 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                SampleSupportDialogFragment fragment = new SampleSupportDialogFragment();
-                Bundle args = new Bundle();
-                args.putInt(
-                        SupportBlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
-                        mBlurRadiusSeekbar.getProgress()
+                SampleSupportDialogFragment fragment
+                        = SampleSupportDialogFragment.newInstance(
+                        mBlurRadiusSeekbar.getProgress(),
+                        mDownScaleFactorSeekbar.getProgress(),
+                        mDimmingEnable.isChecked(),
+                        mDebugMode.isChecked()
                 );
-                args.putFloat(
-                        SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
-                        mDownScaleFactorSeekbar.getProgress()
-                );
-                args.putBoolean(
-                        SupportBlurDialogFragment.BUNDLE_KEY_DIMMING,
-                        mDimmingEnable.isChecked()
-                );
-                fragment.setArguments(args);
-                fragment.debug(mDebugMode.isChecked());
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;
             default:

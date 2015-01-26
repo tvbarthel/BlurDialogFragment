@@ -12,8 +12,6 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SampleActivity extends Activity implements View.OnClickListener {
 
@@ -52,6 +50,11 @@ public class SampleActivity extends Activity implements View.OnClickListener {
      */
     String mDownScalePrefix;
 
+    /**
+     * Checkbox used to enable / disable dimming effect.
+     */
+    private CheckBox mDimmingEnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,7 @@ public class SampleActivity extends Activity implements View.OnClickListener {
         mDownScaleFactorTextView = ((TextView) findViewById(R.id.downScalefactor));
         mDownScaleFactorSeekbar = ((SeekBar) findViewById(R.id.downScaleFactorSeekbar));
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
+        mDimmingEnable = ((CheckBox) findViewById(R.id.dimmingEnable));
 
         setUpView();
     }
@@ -91,18 +95,13 @@ public class SampleActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                SampleDialogFragment fragment = new SampleDialogFragment();
-                Bundle args = new Bundle();
-                args.putInt(
-                        SupportBlurDialogFragment.BUNDLE_KEY_BLUR_RADIUS,
-                        mBlurRadiusSeekbar.getProgress()
+                SampleDialogFragment fragment
+                        = SampleDialogFragment.newInstance(
+                        mBlurRadiusSeekbar.getProgress(),
+                        mDownScaleFactorSeekbar.getProgress(),
+                        mDimmingEnable.isChecked(),
+                        mDebugMode.isChecked()
                 );
-                args.putFloat(
-                        SupportBlurDialogFragment.BUNDLE_KEY_DOWN_SCALE_FACTOR,
-                        mDownScaleFactorSeekbar.getProgress()
-                );
-                fragment.setArguments(args);
-                fragment.debug(mDebugMode.isChecked());
                 fragment.show(getFragmentManager(), "blur_sample");
                 break;
             default:
