@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -284,20 +283,31 @@ class BlurDialogEngine {
         }
 
         final int topOffset = actionBarHeight + statusBarHeight;
-        final int bottomOffset = getNavigationBarOffset();
+
+        // evaluate bottom or right offset due to navigation bar.
+        int bottomOffset = 0;
+        int rightOffset = 0;
+        final int navBarSize = getNavigationBarOffset();
+        if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
+            bottomOffset = navBarSize;
+        } else {
+            rightOffset = navBarSize;
+        }
+
 
         //add offset to the source boundaries since we don't want to blur actionBar pixels
         Rect srcRect = new Rect(
                 0,
                 topOffset,
-                bkg.getWidth(),
+                bkg.getWidth() - rightOffset,
                 bkg.getHeight() - bottomOffset
         );
 
         //in order to keep the same ratio as the one which will be used for rendering, also
         //add the offset to the overlay.
         double height = Math.ceil((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
-        double width = Math.ceil((view.getWidth() * height / (view.getHeight() - topOffset - bottomOffset)));
+        double width = Math.ceil(((view.getWidth() - rightOffset) * height
+                / (view.getHeight() - topOffset - bottomOffset)));
         overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
 
         try {
@@ -419,8 +429,7 @@ class BlurDialogEngine {
     private int getNavigationBarOffset() {
         int result = 0;
         Resources resources = mHoldingActivity.getResources();
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP
-                && resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
             int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 result = resources.getDimensionPixelSize(resourceId);
