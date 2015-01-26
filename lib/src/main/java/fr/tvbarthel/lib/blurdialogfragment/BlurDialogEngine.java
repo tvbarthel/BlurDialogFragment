@@ -309,7 +309,7 @@ class BlurDialogEngine {
         canvas.drawBitmap(bkg, srcRect, destRect, paint);
 
         //apply fast blur on overlay
-        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, false);
+        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
 
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
