@@ -121,6 +121,11 @@ public class SampleDialogFragment extends BlurDialogFragment {
     }
 
     @Override
+    protected boolean isActionBarBlurred() {
+        return true;
+    }
+
+    @Override
     protected float getDownScaleFactor() {
         return mDownScaleFactor;
     }

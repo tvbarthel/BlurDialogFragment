@@ -6,8 +6,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 
 /**
  * Encapsulate dialog behavior with blur effect for app using {@link android.app.DialogFragment}.
@@ -55,6 +55,8 @@ public abstract class BlurDialogFragment extends DialogFragment {
         mBlurEngine.setDownScaleFactor(factor);
 
         mBlurEngine.debug(isDebugEnable());
+
+        mBlurEngine.setBlurActionBar(isActionBarBlurred());
 
         mDimmingEffect = isDimmingEnable();
     }
@@ -166,9 +168,22 @@ public abstract class BlurDialogFragment extends DialogFragment {
      * <p/>
      * Disabled by default.
      *
-     * @return enable true to enable the dimming effect.
+     * @return true to enable the dimming effect.
      */
     protected boolean isDimmingEnable() {
         return BlurDialogEngine.DEFAULT_DIMMING_POLICY;
+    }
+
+    /**
+     * For inheritance purpose.
+     * <p/>
+     * Enable or disable the blur effect on the action bar.
+     * <p/>
+     * Disable by default.
+     *
+     * @return true to enable the blur effect on the action bar.
+     */
+    protected boolean isActionBarBlurred() {
+        return BlurDialogEngine.DEFAULT_ACTION_BAR_BLUR;
     }
 }
