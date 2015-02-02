@@ -9,6 +9,7 @@ This project allows to display DialogFragment with a burring effect behind. The 
 * [Example](#example)
 * [Dependency](#dependency)
 * [Simple usage using inheritance](#simple-usage-using-inheritance)
+* [Customize your blurring effect](#customize-your-blurring-effect)
 * [Avoiding inheritance](#avoiding-inheritance)
 * [Benchmark](#benchmark)
 * [Known bugs](#known-bugs)
@@ -41,7 +42,7 @@ Simple usage using inheritance
 If you are using **android.app.DialogFragment** : extends **BlurDialogFragment**. 
 Play with the blur radius and the down scale factor to obtain the perfect blur.
 
-Don't forget to enable log in order to keep on eye the perfomance.
+Don't forget to enable log if you want to keep on eye the perfomance.
 
 ```java
 /**
@@ -49,17 +50,6 @@ Don't forget to enable log in order to keep on eye the perfomance.
  */
 public class SampleDialogFragment extends BlurDialogFragment {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.debug(true);
-        this.setBlurRadius(4);
-        this.setDownScaleFactor(5.0f);
-        
-        ...
-    }
-    
-    ...
 }
 ```
 
@@ -74,32 +64,86 @@ Don't forget to enable log in order to keep on eye the perfomance.
  */
 public class SampleDialogFragment extends SupportBlurDialogFragment {
 
+}
+```
+
+Customize your blurring effect
+======
+```java
+
+/**
+ * Simple fragment with a customized blurring effect.
+ */
+public class SampleDialogFragment extends BlurDialogFragment {
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.debug(true);
-        this.setBlurRadius(4);
-        this.setDownScaleFactor(5.0f);
-        
         ...
     }
     
+    @Override
+    protected float getDownScaleFactor() {
+        // Allow to customize the down scale factor.
+        return 5.0;
+    }
+
+    @Override
+    protected int getBlurRadius() {
+        // Allow to customize the blur radius factor.
+        return 7;
+    }
+    
+    @Override
+    protected boolean isActionBarBlurred() {
+        // Enable or disable the blur effect on the action bar.
+        // Disabled by default.
+        return true;
+    }
+    
+    @Override
+    protected boolean isDimmingEnable() {
+        // Enable or disable the dimming effect.
+        // Disabled by default.
+        return true;
+    }
+    
+    @Override
+    protected boolean isDebugEnable() {
+        // Enable or disable debug mode.
+        // False by default.
+        return true;
+    }
     ...
-}
 ```
 
 Default values are set to : 
  ```java
+ 
     /**
      * Since image is going to be blurred, we don't care about resolution.
-     * Down scale factor reduces blurring time and memory allocation.
+     * Down scale factor to reduce blurring time and memory allocation.
      */
-    private static final float BLUR_DOWN_SCALE_FACTOR = 4.0f;
+    static final float DEFAULT_BLUR_DOWN_SCALE_FACTOR = 4.0f;
 
     /**
-     * Radius used to blur the background.
+     * Radius used to blur the background
      */
-    private static final int BLUR_RADIUS = 8;
+    static final int DEFAULT_BLUR_RADIUS = 8;
+
+    /**
+     * Default dimming policy.
+     */
+    static final boolean DEFAULT_DIMMING_POLICY = false;
+
+    /**
+     * Default debug policy.
+     */
+    static final boolean DEFAULT_DEBUG_POLICY = false;
+
+    /**
+     * Default action bar blurred policy.
+     */
+    static final boolean DEFAULT_ACTION_BAR_BLUR = false;
     
 ```
 
@@ -128,6 +172,8 @@ public class SampleDialogFragment extends MyCustomDialogFragment {
         mBlurEngine.debug(mDebugEnable);
         mBlurEngine.setBlurRadius(8);
         mBlurEngine.setDownScaleFactor(8f);
+        mBlurEngine.debug(true);
+        mBlurEngine.setBlurActionBar(true);
     }
     
     @Override
@@ -212,6 +258,7 @@ TODO
 
 Change logs
 =======
+* 1.0.0 : Animate blurring effect, support tablet, tweak nav bar offset and reduce memory allocation.
 * 0.1.2 : Fix bottom offset introduce by the navigation bar on Lollipop.
 * 0.1.1 : Fix top offset when using Toolbar.
 * 0.1.0 : Support appcompat-v7:21.
