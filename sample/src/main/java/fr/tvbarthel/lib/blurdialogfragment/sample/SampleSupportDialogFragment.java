@@ -37,24 +37,32 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
      */
     private static final String BUNDLE_KEY_DEBUG = "bundle_key_debug_effect";
 
+    /**
+     * Bundle key used for blur effect on action bar policy.
+     */
+    private static final String BUNDLE_KEY_BLURRED_ACTION_BAR = "bundle_key_blurred_action_bar";
+
     private int mRadius;
     private float mDownScaleFactor;
     private boolean mDimming;
     private boolean mDebug;
+    private boolean mBlurredActionBar;
 
     /**
      * Retrieve a new instance of the sample fragment.
      *
-     * @param radius          blur radius.
-     * @param downScaleFactor down scale factor.
-     * @param dimming         dimming effect.
-     * @param debug           debug policy.
+     * @param radius            blur radius.
+     * @param downScaleFactor   down scale factor.
+     * @param dimming           dimming effect.
+     * @param debug             debug policy.
+     * @param mBlurredActionBar blur affect on actionBar policy.
      * @return well instantiated fragment.
      */
     public static SampleSupportDialogFragment newInstance(int radius,
                                                           float downScaleFactor,
                                                           boolean dimming,
-                                                          boolean debug) {
+                                                          boolean debug,
+                                                          boolean mBlurredActionBar) {
         SampleSupportDialogFragment fragment = new SampleSupportDialogFragment();
         Bundle args = new Bundle();
         args.putInt(
@@ -73,6 +81,10 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
                 BUNDLE_KEY_DEBUG,
                 debug
         );
+        args.putBoolean(
+                BUNDLE_KEY_BLURRED_ACTION_BAR,
+                mBlurredActionBar
+        );
 
         fragment.setArguments(args);
 
@@ -88,6 +100,7 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         mDownScaleFactor = args.getFloat(BUNDLE_KEY_DOWN_SCALE_FACTOR);
         mDimming = args.getBoolean(BUNDLE_KEY_DIMMING);
         mDebug = args.getBoolean(BUNDLE_KEY_DEBUG);
+        mBlurredActionBar = args.getBoolean(BUNDLE_KEY_BLURRED_ACTION_BAR);
     }
 
     @Override
@@ -115,6 +128,11 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
     @Override
     protected boolean isDimmingEnable() {
         return mDimming;
+    }
+
+    @Override
+    protected boolean isActionBarBlurred() {
+        return mBlurredActionBar;
     }
 
     @Override
