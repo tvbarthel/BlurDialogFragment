@@ -29,6 +29,20 @@ final class FastBlurHelper {
      * @param canReuseInBitmap true if bitmap must be reused without blur
      * @return blurred bitmap
      */
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+        return doBlur(sentBitmap, radius, canReuseInBitmap, false, null);
+    }
+
+    /**
+     * blur a given bitmap
+     *
+     * @param sentBitmap       bitmap to blur
+     * @param radius           blur radius
+     * @param canReuseInBitmap true if bitmap must be reused without blur
+     * @param useRenderScript  true if should use RenderScript
+     * @param context          used by RenderScript, can be null if RenderScript disabled
+     * @return blurred bitmap
+     */
     @SuppressLint("NewApi")
     public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean useRenderScript, Context context) {
 
