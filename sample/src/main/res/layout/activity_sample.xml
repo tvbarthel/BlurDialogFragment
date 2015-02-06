@@ -65,6 +65,13 @@
             <CheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/activity_sample_blur_userendercript"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:id="@+id/userendercript" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/activity_sample_actionbar_blurred"
                 android:textColor="@color/secondary_text_default_material_light"
                 android:id="@+id/blur_actionbar_enable" />
