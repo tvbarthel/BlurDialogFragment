@@ -159,7 +159,7 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
     }
 
     @Override
-    protected boolean getUseRenderScript() {
+    protected boolean isRenderScriptEnable() {
         return mUseRenderScript;
     }
 }

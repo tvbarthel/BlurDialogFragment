@@ -67,7 +67,7 @@ class BlurDialogEngine {
     /**
      * Default use of RenderScript.
      */
-    public static final boolean DEFAULT_USE_RENDERSCRIPT = false;
+    static final boolean DEFAULT_USE_RENDERSCRIPT = false;
 
     /**
      * Log cat
@@ -374,11 +374,12 @@ class BlurDialogEngine {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
 
             //display information in LogCat
+            Log.d(TAG, "Blur method : " + (mUseRenderScript ? "RenderScript" : "FastBlur"));
             Log.d(TAG, "Radius : " + mBlurRadius);
             Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
             Log.d(TAG, "Blurred achieved in : " + blurTime);
             Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
-                    + overlay.getRowBytes() + "ko (FastBlur)");
+                    + overlay.getRowBytes() + "ko (blurred bitmap)");
             //display blurring time directly on screen
             Rect bounds = new Rect();
             Canvas canvas1 = new Canvas(overlay);

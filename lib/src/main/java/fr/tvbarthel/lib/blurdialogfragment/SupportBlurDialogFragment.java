@@ -52,7 +52,7 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
         }
         mBlurEngine.setDownScaleFactor(factor);
 
-        mBlurEngine.setUseRenderScript(getUseRenderScript());
+        mBlurEngine.setUseRenderScript(isRenderScriptEnable());
 
         mBlurEngine.debug(isDebugEnable());
 
@@ -195,7 +195,7 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
      *
      * @return true to enable RenderScript.
      */
-    protected boolean getUseRenderScript() {
+    protected boolean isRenderScriptEnable() {
         return BlurDialogEngine.DEFAULT_USE_RENDERSCRIPT;
     }
 

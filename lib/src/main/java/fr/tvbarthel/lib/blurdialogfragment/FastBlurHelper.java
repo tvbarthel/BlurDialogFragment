@@ -44,7 +44,8 @@ final class FastBlurHelper {
      * @return blurred bitmap
      */
     @SuppressLint("NewApi")
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean useRenderScript, Context context) {
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap,
+                                boolean useRenderScript, Context context) {
 
         if (radius < 1) {
             return (null);
@@ -52,7 +53,8 @@ final class FastBlurHelper {
 
         Bitmap bitmap;
         if (canReuseInBitmap || (useRenderScript && sentBitmap.getConfig() == Bitmap.Config.RGB_565)) {
-            // if RenderScript is used and bitmap is in RGB_565, it will necessarily be copied when converting to ARGB_8888
+            // if RenderScript is used and bitmap is in RGB_565, it will
+            // necessarily be copied when converting to ARGB_8888
             bitmap = sentBitmap;
         } else {
             bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
@@ -61,7 +63,8 @@ final class FastBlurHelper {
         if (Build.VERSION.SDK_INT > 16 && useRenderScript) {
             if (bitmap.getConfig() == Bitmap.Config.RGB_565) {
                 // RenderScript hates RGB_565 so we convert it to ARGB_8888
-                // (see http://stackoverflow.com/questions/21563299/defect-of-image-with-scriptintrinsicblur-from-support-library)
+                // (see http://stackoverflow.com/questions/21563299/
+                // defect-of-image-with-scriptintrinsicblur-from-support-library)
                 bitmap = convertRGB565toARGB888(bitmap);
             }
 
