@@ -58,6 +58,11 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
      */
     private CheckBox mBlurredActionBar;
 
+    /**
+     * Checkbox used to enable / disable use of RenderScript
+     */
+    private CheckBox mUseRenderScript;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +76,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDebugMode = ((CheckBox) findViewById(R.id.debugMode));
         mDimmingEnable = ((CheckBox) findViewById(R.id.dimmingEnable));
         mBlurredActionBar = ((CheckBox) findViewById(R.id.blur_actionbar_enable));
+        mUseRenderScript = ((CheckBox) findViewById(R.id.userendercript));
 
         setUpView();
     }
@@ -105,7 +111,8 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
                         mDownScaleFactorSeekbar.getProgress(),
                         mDimmingEnable.isChecked(),
                         mDebugMode.isChecked(),
-                        mBlurredActionBar.isChecked()
+                        mBlurredActionBar.isChecked(),
+                        mUseRenderScript.isChecked()
                 );
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;

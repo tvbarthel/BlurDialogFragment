@@ -1,6 +1,13 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 
 /**
  * Helper used to apply Fast blur algorithm on bitmap.
@@ -23,6 +30,55 @@ final class FastBlurHelper {
      * @return blurred bitmap
      */
     public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+        return doBlur(sentBitmap, radius, canReuseInBitmap, false, null);
+    }
+
+    /**
+     * blur a given bitmap
+     *
+     * @param sentBitmap       bitmap to blur
+     * @param radius           blur radius
+     * @param canReuseInBitmap true if bitmap must be reused without blur
+     * @param useRenderScript  true if should use RenderScript
+     * @param context          used by RenderScript, can be null if RenderScript disabled
+     * @return blurred bitmap
+     */
+    @SuppressLint("NewApi")
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap,
+                                boolean useRenderScript, Context context) {
+
+        if (radius < 1) {
+            return (null);
+        }
+
+        Bitmap bitmap;
+        if (canReuseInBitmap || (useRenderScript && sentBitmap.getConfig() == Bitmap.Config.RGB_565)) {
+            // if RenderScript is used and bitmap is in RGB_565, it will
+            // necessarily be copied when converting to ARGB_8888
+            bitmap = sentBitmap;
+        } else {
+            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+        }
+
+        if (Build.VERSION.SDK_INT > 16 && useRenderScript) {
+            if (bitmap.getConfig() == Bitmap.Config.RGB_565) {
+                // RenderScript hates RGB_565 so we convert it to ARGB_8888
+                // (see http://stackoverflow.com/questions/21563299/
+                // defect-of-image-with-scriptintrinsicblur-from-support-library)
+                bitmap = convertRGB565toARGB888(bitmap);
+            }
+
+            final RenderScript rs = RenderScript.create(context);
+            final Allocation input = Allocation.createFromBitmap(rs, bitmap, Allocation.MipmapControl.MIPMAP_NONE,
+                    Allocation.USAGE_SCRIPT);
+            final Allocation output = Allocation.createTyped(rs, input.getType());
+            final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            script.setRadius(radius);
+            script.setInput(input);
+            script.forEach(output);
+            output.copyTo(bitmap);
+            return bitmap;
+        }
 
         // Stack Blur v1.0 from
         // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
@@ -51,17 +107,6 @@ final class FastBlurHelper {
         // the following line:
         //
         // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
-
-        Bitmap bitmap;
-        if (canReuseInBitmap) {
-            bitmap = sentBitmap;
-        } else {
-            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-        }
-
-        if (radius < 1) {
-            return (null);
-        }
 
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
@@ -255,5 +300,9 @@ final class FastBlurHelper {
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
         return (bitmap);
+    }
+
+    private static Bitmap convertRGB565toARGB888(Bitmap bitmap) {
+        return bitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 }

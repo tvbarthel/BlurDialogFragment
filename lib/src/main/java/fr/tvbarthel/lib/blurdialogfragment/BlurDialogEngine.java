@@ -65,6 +65,11 @@ class BlurDialogEngine {
     static final boolean DEFAULT_ACTION_BAR_BLUR = false;
 
     /**
+     * Default use of RenderScript.
+     */
+    static final boolean DEFAULT_USE_RENDERSCRIPT = false;
+
+    /**
      * Log cat
      */
     private static final String TAG = BlurDialogEngine.class.getSimpleName();
@@ -121,6 +126,11 @@ class BlurDialogEngine {
      * Boolean used to know if the actionBar should be blurred.
      */
     private boolean mBlurredActionBar;
+
+    /**
+     * Boolean used to know if RenderScript should be used
+     */
+    private boolean mUseRenderScript;
 
 
     /**
@@ -227,6 +237,19 @@ class BlurDialogEngine {
         } else {
             mBlurRadius = 0;
         }
+    }
+
+    /**
+     * Set use of RenderScript
+     * <p/>
+     * By default RenderScript is set to
+     * {@link BlurDialogEngine#DEFAULT_USE_RENDERSCRIPT}
+     *
+     * @param useRenderScript use of RenderScript
+     */
+
+    public void setUseRenderScript(boolean useRenderScript) {
+        mUseRenderScript = useRenderScript;
     }
 
     /**
@@ -345,17 +368,18 @@ class BlurDialogEngine {
         canvas.drawBitmap(bkg, srcRect, destRect, paint);
 
         //apply fast blur on overlay
-        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
+        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true, mUseRenderScript, mHoldingActivity);
 
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
 
             //display information in LogCat
+            Log.d(TAG, "Blur method : " + (mUseRenderScript ? "RenderScript" : "FastBlur"));
             Log.d(TAG, "Radius : " + mBlurRadius);
             Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
             Log.d(TAG, "Blurred achieved in : " + blurTime);
             Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
-                    + overlay.getRowBytes() + "ko (FastBlur)");
+                    + overlay.getRowBytes() + "ko (blurred bitmap)");
             //display blurring time directly on screen
             Rect bounds = new Rect();
             Canvas canvas1 = new Canvas(overlay);

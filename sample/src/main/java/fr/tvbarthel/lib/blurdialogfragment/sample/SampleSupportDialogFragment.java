@@ -42,11 +42,17 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
      */
     private static final String BUNDLE_KEY_BLURRED_ACTION_BAR = "bundle_key_blurred_action_bar";
 
+    /**
+     * Bundle key used for RenderScript
+     */
+    private static final String BUNDLE_KEY_USE_RENDERSCRIPT = "bundle_key_use_renderscript";
+
     private int mRadius;
     private float mDownScaleFactor;
     private boolean mDimming;
     private boolean mDebug;
     private boolean mBlurredActionBar;
+    private boolean mUseRenderScript;
 
     /**
      * Retrieve a new instance of the sample fragment.
@@ -56,13 +62,15 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
      * @param dimming           dimming effect.
      * @param debug             debug policy.
      * @param mBlurredActionBar blur affect on actionBar policy.
+     * @param useRenderScript   use of RenderScript
      * @return well instantiated fragment.
      */
     public static SampleSupportDialogFragment newInstance(int radius,
                                                           float downScaleFactor,
                                                           boolean dimming,
                                                           boolean debug,
-                                                          boolean mBlurredActionBar) {
+                                                          boolean mBlurredActionBar,
+                                                          boolean useRenderScript) {
         SampleSupportDialogFragment fragment = new SampleSupportDialogFragment();
         Bundle args = new Bundle();
         args.putInt(
@@ -85,6 +93,10 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
                 BUNDLE_KEY_BLURRED_ACTION_BAR,
                 mBlurredActionBar
         );
+        args.putBoolean(
+                BUNDLE_KEY_USE_RENDERSCRIPT,
+                useRenderScript
+        );
 
         fragment.setArguments(args);
 
@@ -101,6 +113,7 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         mDimming = args.getBoolean(BUNDLE_KEY_DIMMING);
         mDebug = args.getBoolean(BUNDLE_KEY_DEBUG);
         mBlurredActionBar = args.getBoolean(BUNDLE_KEY_BLURRED_ACTION_BAR);
+        mUseRenderScript = args.getBoolean(BUNDLE_KEY_USE_RENDERSCRIPT);
     }
 
     @Override
@@ -143,5 +156,10 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
     @Override
     protected int getBlurRadius() {
         return mRadius;
+    }
+
+    @Override
+    protected boolean isRenderScriptEnable() {
+        return mUseRenderScript;
     }
 }
