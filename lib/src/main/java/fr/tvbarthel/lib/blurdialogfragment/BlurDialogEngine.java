@@ -472,7 +472,9 @@ class BlurDialogEngine {
         TypedValue typedValue = new TypedValue();
         int[] attribute = new int[]{android.R.attr.windowTranslucentStatus};
         TypedArray array = mHoldingActivity.obtainStyledAttributes(typedValue.resourceId, attribute);
-        return array.getBoolean(0, false);
+        boolean isStatusBarTranslucent = array.getBoolean(0, false);
+        array.recycle();
+        return isStatusBarTranslucent;
     }
 
     /**
