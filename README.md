@@ -258,7 +258,7 @@ Known bugs
 
 RenderScript or not RenderScript
 =======
-Thanks to @amasciul blurring effect can now be achieved using ScriptIntrinsicBlur (v1.1.0).
+Thanks to [amasciul](https://github.com/amasciul) blurring effect can now be achieved using ScriptIntrinsicBlur (v1.1.0).
 
 Find more information on the [memory trace](http://tvbarthel.github.io/blur-dialog-fragment.html) and on the [execution time](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595).
 
@@ -270,7 +270,7 @@ TODO
 
 Change logs
 =======
-* 1.1.0 : Allow to use RenderScript (thank to @amasciul).
+* 1.1.0 : Allow to use RenderScript (thank to [amasciul](https://github.com/amasciul)).
 * 1.0.0 : Animate blurring effect, support tablet, tweak nav bar offset and reduce memory allocation.
 * 0.1.2 : Fix bottom offset introduce by the navigation bar on Lollipop.
 * 0.1.1 : Fix top offset when using Toolbar.
