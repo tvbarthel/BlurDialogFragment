@@ -106,6 +106,13 @@ public class SampleDialogFragment extends BlurDialogFragment {
         // Disabled by default.
         return true;
     }
+
+    @Override
+    protected boolean isRenderScriptEnable() {
+        // Enable or disable the use of RenderScript for blurring effect
+        // Disabled by default.
+        return true;
+    }
     
     @Override
     protected boolean isDebugEnable() {
@@ -144,6 +151,11 @@ Default values are set to :
      * Default action bar blurred policy.
      */
     static final boolean DEFAULT_ACTION_BAR_BLUR = false;
+
+    /**
+     * Default use of RenderScript.
+     */
+    static final boolean DEFAULT_USE_RENDERSCRIPT = false;
     
 ```
 
@@ -174,6 +186,7 @@ public class SampleDialogFragment extends MyCustomDialogFragment {
         mBlurEngine.setDownScaleFactor(8f);
         mBlurEngine.debug(true);
         mBlurEngine.setBlurActionBar(true);
+        mBlurEngine.setUseRenderScript(true);
     }
     
     @Override
@@ -245,10 +258,9 @@ Known bugs
 
 RenderScript or not RenderScript
 =======
-Since ScriptIntrinsicBlur seems to doens't work with RGB_565 Bitmap (used to reduce by half Bitmap allocation) I keep thinking about using RenderScript for applying blur effect.
+Thanks to @amasciul blurring effect can now be achieved using ScriptIntrinsicBlur (v1.1.0).
 
 Find more information on the [memory trace](http://tvbarthel.github.io/blur-dialog-fragment.html) and on the [execution time](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595).
-
 
 
 
@@ -258,6 +270,7 @@ TODO
 
 Change logs
 =======
+* 1.1.0 : Allow to use RenderScript (thank to @amasciul).
 * 1.0.0 : Animate blurring effect, support tablet, tweak nav bar offset and reduce memory allocation.
 * 0.1.2 : Fix bottom offset introduce by the navigation bar on Lollipop.
 * 0.1.1 : Fix top offset when using Toolbar.
@@ -298,3 +311,5 @@ Special Thanks to ...
 Pavlo Dudka [https://github.com/paveldudka/](https://github.com/paveldudka/) , for his impressive article on [Advanced blurring techniques](http://trickyandroid.com/advanced-blurring-techniques/).
 
 Vincent Brison [https://github.com/vincentbrison](https://github.com/vincentbrison) , for his early day support.
+
+Alexandre Masciulli [https://github.com/amasciul](https://github.com/amasciul) , for the integration of RenderScript.
