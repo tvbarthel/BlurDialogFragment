@@ -107,8 +107,8 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
             case R.id.button:
                 SampleSupportDialogFragment fragment
                         = SampleSupportDialogFragment.newInstance(
-                        mBlurRadiusSeekbar.getProgress(),
-                        mDownScaleFactorSeekbar.getProgress(),
+                        mBlurRadiusSeekbar.getProgress() + 1,
+                        (mDownScaleFactorSeekbar.getProgress() / 10f) + 2,
                         mDimmingEnable.isChecked(),
                         mDebugMode.isChecked(),
                         mBlurredActionBar.isChecked(),
@@ -129,7 +129,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mBlurRadiusSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mBlurRadiusTextView.setText(mBlurPrefix + progress);
+                mBlurRadiusTextView.setText(mBlurPrefix + (progress + 1));
             }
 
             @Override
@@ -146,7 +146,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDownScaleFactorSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mDownScaleFactorTextView.setText(mDownScalePrefix + progress);
+                mDownScaleFactorTextView.setText(mDownScalePrefix + (progress / 10f + 2));
             }
 
             @Override
@@ -164,7 +164,7 @@ public class SampleActionBarActivity extends ActionBarActivity implements View.O
         mDownScalePrefix = getString(R.string.activity_sample_down_scale_factor);
 
         //set default blur radius to 8.
-        mBlurRadiusSeekbar.setProgress(8);
-        mDownScaleFactorSeekbar.setProgress(4);
+        mBlurRadiusSeekbar.setProgress(7);
+        mDownScaleFactorSeekbar.setProgress(20);
     }
 }
