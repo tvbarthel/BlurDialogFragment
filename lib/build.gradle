@@ -13,6 +13,8 @@ android {
         targetSdkVersion 22
         versionCode 5
         versionName "1.4"
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
