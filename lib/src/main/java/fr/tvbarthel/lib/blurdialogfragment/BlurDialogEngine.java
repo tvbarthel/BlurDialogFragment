@@ -162,7 +162,8 @@ class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            mBlurredBackgroundView
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                mBlurredBackgroundView
                     .animate()
                     .alpha(0f)
                     .setDuration(mAnimationDuration)
@@ -180,6 +181,8 @@ class BlurDialogEngine {
                             removeBlurredView();
                         }
                     }).start();
+            else
+                removeBlurredView();
         }
 
         //cancel async task
@@ -549,13 +552,14 @@ class BlurDialogEngine {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            mBlurredBackgroundView.setAlpha(0f);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1)
+                mBlurredBackgroundView.setAlpha(0f);
             mHoldingActivity.getWindow().addContentView(
                     mBlurredBackgroundView,
                     mBlurredBackgroundLayoutParams
             );
-            mBlurredBackgroundView
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                mBlurredBackgroundView
                     .animate()
                     .alpha(1f)
                     .setDuration(mAnimationDuration)
