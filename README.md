@@ -67,6 +67,18 @@ public class SampleDialogFragment extends SupportBlurDialogFragment {
 }
 ```
 
+Use RenderScript in Your Project
+======
+
+Simply add this line to your build.gradle
+
+```
+    defaultConfig {
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
+    }
+```
+
 Customize your blurring effect
 ======
 ```java
