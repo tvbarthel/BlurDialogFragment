@@ -8,6 +8,7 @@ This project allows to display DialogFragment with a burring effect behind. The 
 * [Sample app](#sample-app)
 * [Example](#example)
 * [Dependency](#dependency)
+* [Use RenderScript in Your Project] (#use-renderscript-in-your-project)
 * [Simple usage using inheritance](#simple-usage-using-inheritance)
 * [Customize your blurring effect](#customize-your-blurring-effect)
 * [Avoiding inheritance](#avoiding-inheritance)
@@ -37,6 +38,20 @@ Dependency
 =======
 In order to use this library, just add a new gradle dependency : [BlurDialogFragment dependency](https://github.com/tvbarthel/maven#usage) 
 
+Use RenderScript in Your Project
+======
+
+Simply add this line to your build.gradle
+
+```
+    defaultConfig {
+        ...
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
+        ...
+    }
+```
+
 Simple usage using inheritance
 =======
 If you are using **android.app.DialogFragment** : extends **BlurDialogFragment**. 
@@ -65,18 +80,6 @@ Don't forget to enable log in order to keep on eye the perfomance.
 public class SampleDialogFragment extends SupportBlurDialogFragment {
 
 }
-```
-
-Use RenderScript in Your Project
-======
-
-Simply add this line to your build.gradle
-
-```
-    defaultConfig {
-        renderscriptTargetApi 22
-        renderscriptSupportModeEnabled true
-    }
 ```
 
 Customize your blurring effect
