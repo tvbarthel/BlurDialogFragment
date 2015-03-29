@@ -2,6 +2,7 @@ package fr.tvbarthel.lib.blurdialogfragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -158,28 +159,33 @@ class BlurDialogEngine {
     /**
      * Must be linked to the original lifecycle.
      */
+    @SuppressLint("NewApi")
     public void onDismiss() {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         if (mBlurredBackgroundView != null) {
-            mBlurredBackgroundView
-                    .animate()
-                    .alpha(0f)
-                    .setDuration(mAnimationDuration)
-                    .setInterpolator(new AccelerateInterpolator())
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            removeBlurredView();
-                        }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                mBlurredBackgroundView
+                        .animate()
+                        .alpha(0f)
+                        .setDuration(mAnimationDuration)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                removeBlurredView();
+                            }
 
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                            super.onAnimationCancel(animation);
-                            removeBlurredView();
-                        }
-                    }).start();
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                super.onAnimationCancel(animation);
+                                removeBlurredView();
+                            }
+                        }).start();
+            } else {
+                removeBlurredView();
+            }
         }
 
         //cancel async task
@@ -547,21 +553,25 @@ class BlurDialogEngine {
         }
 
         @Override
+        @SuppressLint("NewApi")
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                mBlurredBackgroundView.setAlpha(0f);
+                mHoldingActivity.getWindow().addContentView(
+                        mBlurredBackgroundView,
+                        mBlurredBackgroundLayoutParams
+                );
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                mBlurredBackgroundView
+                        .animate()
+                        .alpha(1f)
+                        .setDuration(mAnimationDuration)
+                        .setInterpolator(new LinearInterpolator())
+                        .start();
 
-            mBlurredBackgroundView.setAlpha(0f);
-            mHoldingActivity.getWindow().addContentView(
-                    mBlurredBackgroundView,
-                    mBlurredBackgroundLayoutParams
-            );
-            mBlurredBackgroundView
-                    .animate()
-                    .alpha(1f)
-                    .setDuration(mAnimationDuration)
-                    .setInterpolator(new LinearInterpolator())
-                    .start();
-
+            }
             mBackgroundView = null;
             mBackground = null;
         }
