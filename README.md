@@ -285,6 +285,7 @@ TODO
 
 Change logs
 =======
+* 2.0.0 : Min SDK 9+, don't forget to check the above section "Use RenderScript in Your Project". (thanks to [ligol](https://github.com/ligol)).
 * 1.1.0 : Allow to use RenderScript (thank to [amasciul](https://github.com/amasciul)).
 * 1.0.0 : Animate blurring effect, support tablet, tweak nav bar offset and reduce memory allocation.
 * 0.1.2 : Fix bottom offset introduce by the navigation bar on Lollipop.
