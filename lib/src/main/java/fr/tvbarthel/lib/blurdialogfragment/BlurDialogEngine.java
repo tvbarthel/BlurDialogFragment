@@ -37,7 +37,7 @@ import android.widget.ImageView;
  * <p/>
  * Simply linked all methods to the matching lifecycle ones.
  */
-class BlurDialogEngine {
+public class BlurDialogEngine {
 
     /**
      * Since image is going to be blurred, we don't care about resolution.

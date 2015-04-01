@@ -285,6 +285,7 @@ TODO
 
 Change logs
 =======
+* 2.0.1 : BlurEngine is back again (restore "avoiding inheritance" usage, thanks to [sergiopantoja](https://github.com/sergiopantoja) report).
 * 2.0.0 : Min SDK 9+, don't forget to check the above section "Use RenderScript in Your Project". (thanks to [ligol](https://github.com/ligol)).
 * 1.1.0 : Allow to use RenderScript (thank to [amasciul](https://github.com/amasciul)).
 * 1.0.0 : Animate blurring effect, support tablet, tweak nav bar offset and reduce memory allocation.
