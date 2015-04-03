@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply from: '../config/quality.gradle'
 
-def version = '1.1.0'
+def version = '2.0.1'
 
 android {
     compileSdkVersion 22
@@ -11,8 +11,6 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 5
-        versionName "1.4"
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
     }
