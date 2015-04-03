@@ -558,6 +558,8 @@ class BlurDialogEngine {
             super.onPostExecute(aVoid);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
                 mBlurredBackgroundView.setAlpha(0f);
+            }
+            if (mHoldingActivity != null) {
                 mHoldingActivity.getWindow().addContentView(
                         mBlurredBackgroundView,
                         mBlurredBackgroundLayoutParams
