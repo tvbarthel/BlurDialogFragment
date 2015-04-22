@@ -459,7 +459,7 @@ public class BlurDialogEngine {
     private int getNavigationBarOffset() {
         int result = 0;
         Resources resources = mHoldingActivity.getResources();
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
             if (resourceId > 0) {
                 result = resources.getDimensionPixelSize(resourceId);
