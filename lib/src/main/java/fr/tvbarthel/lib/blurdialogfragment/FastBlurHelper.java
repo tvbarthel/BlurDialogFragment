@@ -6,13 +6,20 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RSRuntimeException;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import android.util.Log;
 
 /**
  * Helper used to apply Fast blur algorithm on bitmap.
  */
 final class FastBlurHelper {
+
+    /**
+     * Log cat
+     */
+    private static final String TAG = FastBlurHelper.class.getSimpleName();
 
     /**
      * non instantiable helper
@@ -60,7 +67,7 @@ final class FastBlurHelper {
             bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
         }
 
-        if (Build.VERSION.SDK_INT > 16 && useRenderScript) {
+        if (useRenderScript) {
             if (bitmap.getConfig() == Bitmap.Config.RGB_565) {
                 // RenderScript hates RGB_565 so we convert it to ARGB_8888
                 // (see http://stackoverflow.com/questions/21563299/
@@ -68,16 +75,21 @@ final class FastBlurHelper {
                 bitmap = convertRGB565toARGB888(bitmap);
             }
 
-            final RenderScript rs = RenderScript.create(context);
-            final Allocation input = Allocation.createFromBitmap(rs, bitmap, Allocation.MipmapControl.MIPMAP_NONE,
+            try {
+                final RenderScript rs = RenderScript.create(context);
+                final Allocation input = Allocation.createFromBitmap(rs, bitmap, Allocation.MipmapControl.MIPMAP_NONE,
                     Allocation.USAGE_SCRIPT);
-            final Allocation output = Allocation.createTyped(rs, input.getType());
-            final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-            script.setRadius(radius);
-            script.setInput(input);
-            script.forEach(output);
-            output.copyTo(bitmap);
-            return bitmap;
+                final Allocation output = Allocation.createTyped(rs, input.getType());
+                final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+                script.setRadius(radius);
+                script.setInput(input);
+                script.forEach(output);
+                output.copyTo(bitmap);
+                return bitmap;
+            } catch (RSRuntimeException e) {
+                Log.e(TAG, "RenderScript known error : https://code.google.com/p/android/issues/detail?id=71347 "
+                    + "continue with the FastBlur approach.");
+            }
         }
 
         // Stack Blur v1.0 from

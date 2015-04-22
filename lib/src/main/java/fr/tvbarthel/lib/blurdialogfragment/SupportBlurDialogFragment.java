@@ -192,6 +192,16 @@ public abstract class SupportBlurDialogFragment extends DialogFragment {
      * Enable or disable RenderScript.
      * <p/>
      * Disable by default.
+     * <p/>
+     * Don't forget to add those lines to your build.gradle if your are using Renderscript
+     * <pre>
+     *  defaultConfig {
+     *  ...
+     *  renderscriptTargetApi 22
+     *  renderscriptSupportModeEnabled true
+     *  ...
+     *  }
+     * </pre>
      *
      * @return true to enable RenderScript.
      */

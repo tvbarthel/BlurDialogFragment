@@ -1,8 +1,10 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
@@ -12,6 +14,7 @@ import android.view.WindowManager;
  * <p/>
  * All the screen behind the dialog will be blurred except the action bar.
  */
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class BlurDialogFragment extends DialogFragment {
 
     /**
@@ -192,6 +195,16 @@ public abstract class BlurDialogFragment extends DialogFragment {
      * Enable or disable RenderScript.
      * <p/>
      * Disable by default.
+     * <p/>
+     * Don't forget to add those lines to your build.gradle if your are using Renderscript
+     * <pre>
+     *  defaultConfig {
+     *  ...
+     *  renderscriptTargetApi 22
+     *  renderscriptSupportModeEnabled true
+     *  ...
+     *  }
+     * </pre>
      *
      * @return true to enable RenderScript.
      */
