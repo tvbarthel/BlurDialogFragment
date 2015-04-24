@@ -3,6 +3,7 @@ package fr.tvbarthel.lib.blurdialogfragment.sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 
-public class SampleActionBarActivity extends ActionBarActivity implements View.OnClickListener {
+public class SampleActionBarActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Seek bar used to change the blur radius.

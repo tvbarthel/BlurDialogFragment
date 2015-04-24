@@ -6,9 +6,8 @@
         <item name="colorPrimary">@color/action_bar</item>
     </style>
 
-    <style name="FullScreen" parent="Theme.AppCompat.Light">
+    <style name="FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
