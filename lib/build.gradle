@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply from: '../config/quality.gradle'
 
-def version = '2.0.1'
+def version = '2.1.0'
 
 android {
     compileSdkVersion 22

@@ -15,7 +15,6 @@ This project allows to display DialogFragment with a burring effect behind. The 
 * [Benchmark](#benchmark)
 * [Known bugs](#known-bugs)
 * [RenderScript or not RenderScript](#renderscript-or-not-renderscript)
-* [TODO](#todo)
 * [Change logs](#change-logs)
 * [Contributing](#contributing)
 * [Credits](#credits)
@@ -57,7 +56,7 @@ Simple usage using inheritance
 If you are using **android.app.DialogFragment** : extends **BlurDialogFragment**. 
 Play with the blur radius and the down scale factor to obtain the perfect blur.
 
-Don't forget to enable log if you want to keep on eye the perfomance.
+Don't forget to enable log if you want to keep on eye the performance.
 
 ```java
 /**
@@ -71,7 +70,7 @@ public class SampleDialogFragment extends BlurDialogFragment {
 If you are using **android.support.v4.app.DialogFragment** : extends **SupportBlurDialogFragment**. 
 Play with the blur radius and the down scale factor to obtain the perfect blur.
 
-Don't forget to enable log in order to keep on eye the perfomance.
+Don't forget to enable log in order to keep on eye the performance.
 
 ```java
 /**
@@ -278,13 +277,9 @@ Thanks to [amasciul](https://github.com/amasciul) blurring effect can now be ach
 Find more information on the [memory trace](http://tvbarthel.github.io/blur-dialog-fragment.html) and on the [execution time](http://trickyandroid.com/advanced-blurring-techniques/#comment-1557039595).
 
 
-
-TODO
-=======
-* Implement SherlockBlurDialogFragment since actionbarsherlock and appcompat are mutually exclusive.
-
 Change logs
 =======
+* 2.1.0 : Support AppCompatActivity and fix several bugs thanks to [jacobtabak](https://github.com/jacobtabak).
 * 2.0.1 : BlurEngine is back again (restore "avoiding inheritance" usage, thanks to [sergiopantoja](https://github.com/sergiopantoja) report).
 * 2.0.0 : Min SDK 9+, don't forget to check the above section "Use RenderScript in Your Project". (thanks to [ligol](https://github.com/ligol)).
 * 1.1.0 : Allow to use RenderScript (thank to [amasciul](https://github.com/amasciul)).
