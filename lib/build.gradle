@@ -1,8 +1,10 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 apply from: '../config/quality.gradle'
 
-def version = '2.1.0'
+group ='fr.tvbarthel.blurdialogfragment'
+version = '2.1.0'
 
 android {
     compileSdkVersion 22
@@ -22,18 +24,90 @@ android {
     }
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def bintrayUser = properties.getProperty('bintray.user')
+def bintrayKey = properties.getProperty('bintray.apikey')
+
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+
+
+    configurations = ['archives'] //When uploading configuration files
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    //Package configuration. The plugin will use the repo and name properties to check if the package already exists. In that case, there's no need to configure the other package properties (like userOrg, desc, etc).
+    pkg {
+        repo = 'maven'
+        name = 'BlurDialogFragment'
+        desc = 'This project allows to display DialogFragment with a burring effect behind.'
+        websiteUrl = 'https://github.com/tvbarthel/BlurDialogFragment'
+        issueTrackerUrl = 'https://github.com/tvbarthel/BlurDialogFragment/issues'
+        vcsUrl = 'https://github.com/tvbarthel/BlurDialogFragment.git'
+        licenses = ['Apache-2.0']
+        labels = ['android', 'blur', 'dialog']
+        publicDownloadNumbers = true
+
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'BlurDialogFragment'
+                url 'https://github.com/tvbarthel/BlurDialogFragment'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'tbarthel'
+                        name 'Thomas Barthelemy'
+                        email 'thomas.barthelemy.utc@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'https://github.com/tvbarthel/BlurDialogFragment.git'
+                    developerConnection 'https://github.com/tvbarthel/BlurDialogFragment.git'
+                    url 'https://github.com/tvbarthel/BlurDialogFragment'
+
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file:../maven/")
-            pom.groupId = "fr.tvbarthel.lib.blurdialogfragment"
-            pom.artifactId = 'lib'
-            pom.version = version
-        }
-    }
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+task findConventions << {
+    println project.getConvention()
 }
