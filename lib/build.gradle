@@ -49,6 +49,11 @@ bintray {
         licenses = ['Apache-2.0']
         labels = ['android', 'blur', 'dialog']
         publicDownloadNumbers = true
+        version {
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+            }
+        }
 
     }
 }
@@ -60,6 +65,7 @@ install {
                 packaging 'aar'
                 name 'BlurDialogFragment'
                 url 'https://github.com/tvbarthel/BlurDialogFragment'
+                description 'This project allows to display DialogFragment with a burring effect behind.'
                 licenses {
                     license {
                         name 'The Apache Software License, Version 2.0'
