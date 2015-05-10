@@ -35,7 +35,13 @@ Fullscreen activity [blurRadius 2, downScaleFactor 8.0] :
 
 Dependency
 =======
-In order to use this library, just add a new gradle dependency : [BlurDialogFragment dependency](https://github.com/tvbarthel/maven#usage) 
+Since the library is promoted on maven central, just add a new gradle dependency :
+
+```java
+    compile 'fr.tvbarthel.blurdialogfragment:lib:2.1.2'
+```
+
+Don't forget to check the [Use RenderScript in Your Project] (#use-renderscript-in-your-project) if you're planning to use it.
 
 Use RenderScript in Your Project
 ======
@@ -279,6 +285,8 @@ Find more information on the [memory trace](http://tvbarthel.github.io/blur-dial
 
 Change logs
 =======
+* 2.1.2 : Rework support of translucent status bar thanks to [wangsai-silence](https://github.com/wangsai-silence) report.
+* 2.1.1 : Fix usage without renderscript as VerifyError was fired.
 * 2.1.0 : Support AppCompatActivity and fix several bugs thanks to [jacobtabak](https://github.com/jacobtabak).
 * 2.0.1 : BlurEngine is back again (restore "avoiding inheritance" usage, thanks to [sergiopantoja](https://github.com/sergiopantoja) report).
 * 2.0.0 : Min SDK 9+, don't forget to check the above section "Use RenderScript in Your Project". (thanks to [ligol](https://github.com/ligol)).
