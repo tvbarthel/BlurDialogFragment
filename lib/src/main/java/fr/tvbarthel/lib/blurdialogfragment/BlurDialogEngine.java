@@ -334,7 +334,6 @@ public class BlurDialogEngine {
             rightOffset = navBarSize;
         }
 
-
         //add offset to the source boundaries since we don't want to blur actionBar pixels
         Rect srcRect = new Rect(
             0,
@@ -348,7 +347,13 @@ public class BlurDialogEngine {
         double height = Math.ceil((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
         double width = Math.ceil(((view.getWidth() - rightOffset) * height
             / (view.getHeight() - topOffset - bottomOffset)));
-        overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
+
+        // Render script doesn't work with RGB_565
+        if (mUseRenderScript) {
+            overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
+        } else {
+            overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
+        }
 
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
@@ -356,7 +361,6 @@ public class BlurDialogEngine {
                 || mHoldingActivity instanceof AppCompatActivity) {
                 //add offset as top margin since actionBar height must also considered when we display
                 // the blurred background. Don't want to draw on the actionBar.
-
                 mBlurredBackgroundLayoutParams.setMargins(0, actionBarHeight, 0, 0);
                 mBlurredBackgroundLayoutParams.gravity = Gravity.TOP;
             }
@@ -381,24 +385,25 @@ public class BlurDialogEngine {
         //build drawing destination boundaries
         final RectF destRect = new RectF(0, 0, overlay.getWidth(), overlay.getHeight());
 
-        //draw background from source area in source background to the destination area
-        // on the overlay
+        //draw background from source area in source background to the destination area on the overlay
         canvas.drawBitmap(bkg, srcRect, destRect, paint);
 
         //apply fast blur on overlay
-        overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true, mUseRenderScript, mHoldingActivity);
+        if (mUseRenderScript) {
+            overlay = RenderScriptBlurHelper.doBlur(overlay, mBlurRadius, true, mHoldingActivity);
+        } else {
+            overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
+        }
 
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
-
-            //display information in LogCat
             Log.d(TAG, "Blur method : " + (mUseRenderScript ? "RenderScript" : "FastBlur"));
             Log.d(TAG, "Radius : " + mBlurRadius);
             Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
             Log.d(TAG, "Blurred achieved in : " + blurTime);
             Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
-                + overlay.getRowBytes() + "ko (blurred bitmap)");
-            //display blurring time directly on screen
+                + overlay.getRowBytes() + "ko (blurred bitmap)"
+                + (!mUseRenderScript ? " + temp buff " + overlay.getRowBytes() + "ko." : "."));
             Rect bounds = new Rect();
             Canvas canvas1 = new Canvas(overlay);
             paint.setColor(Color.BLACK);
@@ -407,7 +412,6 @@ public class BlurDialogEngine {
             paint.getTextBounds(blurTime, 0, blurTime.length(), bounds);
             canvas1.drawText(blurTime, 2, bounds.height(), paint);
         }
-
         //set bitmap in an image view for final rendering
         mBlurredBackgroundView = new ImageView(mHoldingActivity);
         mBlurredBackgroundView.setScaleType(ImageView.ScaleType.CENTER_CROP);
