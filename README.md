@@ -6,8 +6,8 @@ This project allows to display DialogFragment with a burring effect behind. The 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-BlurDialogFragment-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1064)
 
 * [Sample app](#sample-app)
+* [Gradle dependency](#gradle-dependency)
 * [Example](#example)
-* [Dependency](#dependency)
 * [Use RenderScript in Your Project] (#use-renderscript-in-your-project)
 * [Simple usage using inheritance](#simple-usage-using-inheritance)
 * [Customize your blurring effect](#customize-your-blurring-effect)
@@ -25,15 +25,7 @@ Sample app
 =======
 [Download the sample app on the Google Play store.](https://play.google.com/store/apps/details?id=fr.tvbarthel.lib.blurdialogfragment.sample)
 
-Example
-=======
-Activity with action bar [blurRadius 4, downScaleFactor 5.0] : 
-![action bar blur](/static/action_bar_blur.png)
-
-Fullscreen activity [blurRadius 2, downScaleFactor 8.0] : 
-![full screen blur](/static/full_screen_blur.png)
-
-Dependency
+Gradle dependency
 =======
 Since the library is promoted on maven central, just add a new gradle dependency :
 
@@ -42,6 +34,14 @@ Since the library is promoted on maven central, just add a new gradle dependency
 ```
 
 Don't forget to check the [Use RenderScript in Your Project] (#use-renderscript-in-your-project) if you're planning to use it.
+
+Example
+=======
+Activity with action bar [blurRadius 4, downScaleFactor 5.0] : 
+![action bar blur](/static/action_bar_blur.png)
+
+Fullscreen activity [blurRadius 2, downScaleFactor 8.0] : 
+![full screen blur](/static/full_screen_blur.png)
 
 Use RenderScript in Your Project
 ======
