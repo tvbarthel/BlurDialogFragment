@@ -322,8 +322,14 @@ public class BlurDialogEngine {
             statusBarHeight = getStatusBarHeight();
         }
 
-        final int topOffset = actionBarHeight + statusBarHeight;
+        // check if status bar is translucent to remove status bar offset in order to provide blur
+        // on content bellow the status.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+            && isStatusBarTranslucent()) {
+            statusBarHeight = 0;
+        }
 
+        final int topOffset = actionBarHeight + statusBarHeight;
         // evaluate bottom or right offset due to navigation bar.
         int bottomOffset = 0;
         int rightOffset = 0;
@@ -367,14 +373,6 @@ public class BlurDialogEngine {
         } catch (NoClassDefFoundError e) {
             // no dependency to appcompat, that means no additional top offset due to actionBar.
             mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
-        }
-
-        // check if status bar is translucent.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-            && isStatusBarTranslucent()) {
-            // add the status bar height as top margin.
-            mBlurredBackgroundLayoutParams.setMargins(0
-                , mBlurredBackgroundLayoutParams.topMargin + statusBarHeight, 0, 0);
         }
 
         //scale and draw background view on the canvas overlay
