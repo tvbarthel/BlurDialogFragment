@@ -164,6 +164,8 @@ public class BlurDialogEngine {
     public void onDismiss() {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
+        //cancel async task
+        mBluringTask.cancel(true);
         if (mBlurredBackgroundView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 mBlurredBackgroundView
@@ -188,16 +190,14 @@ public class BlurDialogEngine {
                 removeBlurredView();
             }
         }
-
-        //cancel async task
-        mBluringTask.cancel(true);
-        mBluringTask = null;
     }
 
     /**
      * Must be linked to the original lifecycle.
      */
     public void onDestroy() {
+        mBluringTask.cancel(true);
+        mBluringTask = null;
         mHoldingActivity = null;
     }
 
@@ -334,6 +334,7 @@ public class BlurDialogEngine {
         int bottomOffset = 0;
         int rightOffset = 0;
         final int navBarSize = getNavigationBarOffset();
+
         if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
             bottomOffset = navBarSize;
         } else {
@@ -360,7 +361,6 @@ public class BlurDialogEngine {
         } else {
             overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
         }
-
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
                 || mHoldingActivity instanceof ActionBarActivity
@@ -374,7 +374,6 @@ public class BlurDialogEngine {
             // no dependency to appcompat, that means no additional top offset due to actionBar.
             mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
         }
-
         //scale and draw background view on the canvas overlay
         Canvas canvas = new Canvas(overlay);
         Paint paint = new Paint();
@@ -392,7 +391,6 @@ public class BlurDialogEngine {
         } else {
             overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
         }
-
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
             Log.d(TAG, "Blur method : " + (mUseRenderScript ? "RenderScript" : "FastBlur"));
@@ -522,7 +520,6 @@ public class BlurDialogEngine {
     private class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
 
         private Bitmap mBackground;
-
         private View mBackgroundView;
 
         @Override
@@ -561,10 +558,12 @@ public class BlurDialogEngine {
 
         @Override
         protected Void doInBackground(Void... params) {
-
             //process to the blue
-            blur(mBackground, mBackgroundView);
-
+            if (!isCancelled()) {
+                blur(mBackground, mBackgroundView);
+            } else {
+                return null;
+            }
             //clear memory
             mBackground.recycle();
             mBackgroundView.destroyDrawingCache();
