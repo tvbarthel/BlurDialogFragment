@@ -196,7 +196,9 @@ public class BlurDialogEngine {
      * Must be linked to the original lifecycle.
      */
     public void onDestroy() {
-        mBluringTask.cancel(true);
+        if (mBluringTask != null) {
+            mBluringTask.cancel(true);
+        }
         mBluringTask = null;
         mHoldingActivity = null;
     }
