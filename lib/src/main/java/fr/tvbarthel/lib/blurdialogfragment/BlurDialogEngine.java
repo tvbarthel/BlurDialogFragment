@@ -165,7 +165,9 @@ public class BlurDialogEngine {
         //remove blurred background and clear memory, could be null if dismissed before blur effect
         //processing ends
         //cancel async task
-        mBluringTask.cancel(true);
+        if (mBluringTask != null) {
+            mBluringTask.cancel(true);
+        }
         if (mBlurredBackgroundView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 mBlurredBackgroundView
@@ -196,7 +198,9 @@ public class BlurDialogEngine {
      * Must be linked to the original lifecycle.
      */
     public void onDestroy() {
-        mBluringTask.cancel(true);
+        if (mBluringTask != null) {
+            mBluringTask.cancel(true);
+        }
         mBluringTask = null;
         mHoldingActivity = null;
     }
