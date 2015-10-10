@@ -1,7 +1,5 @@
-<manifest
-    package="fr.tvbarthel.lib.blurdialogfragment"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="fr.tvbarthel.lib.blurdialogfragment">
 
-    <application android:allowBackup="true" />
+    <application />
 
 </manifest>
