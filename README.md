@@ -32,7 +32,7 @@ Gradle dependency
 Since the library is promoted on maven central, just add a new gradle dependency :
 
 ```java
-    compile 'fr.tvbarthel.blurdialogfragment:lib:2.1.4'
+    compile 'fr.tvbarthel.blurdialogfragment:lib:2.1.5'
 ```
 
 Don't forget to check the [Use RenderScript in Your Project] (#use-renderscript-in-your-project) if you're planning to use it.
@@ -287,6 +287,7 @@ Find more information on the [memory trace](http://tvbarthel.github.io/blur-dial
 
 Change logs
 =======
+* 2.1.5 : Minor fixes thanks to [Edward S](https://github.com/edward-s) and [Tommy Chan](https://github.com/tommytcchan).
 * 2.1.4 : Fix NPE during the blurring process thanks to [Anth06ny](https://github.com/Anth06ny), [jacobtabak](https://github.com/jacobtabak) and [serega2593](https://github.com/serega2593) reports.
 * 2.1.3 : Remove unused resources thanks to [ligol](https://github.com/ligol) report.
 * 2.1.2 : Rework support of translucent status bar thanks to [wangsai-silence](https://github.com/wangsai-silence) report.
