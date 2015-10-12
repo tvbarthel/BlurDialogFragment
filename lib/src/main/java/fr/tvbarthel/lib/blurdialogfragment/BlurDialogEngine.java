@@ -31,6 +31,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.commit451.nativestackblur.NativeStackBlur;
+
 /**
  * Encapsulate the whole behaviour to provide a blur effect on a DialogFragment.
  * <p/>
@@ -393,7 +395,7 @@ public class BlurDialogEngine {
         if (mUseRenderScript) {
             overlay = RenderScriptBlurHelper.doBlur(overlay, mBlurRadius, true, mHoldingActivity);
         } else {
-            overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
+            overlay = NativeStackBlur.process(overlay, mBlurRadius);
         }
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
