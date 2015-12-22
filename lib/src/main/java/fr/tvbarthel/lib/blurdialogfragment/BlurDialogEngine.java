@@ -540,13 +540,14 @@ public class BlurDialogEngine {
             mBackgroundView.destroyDrawingCache();
             mBackgroundView.setDrawingCacheEnabled(true);
             mBackgroundView.buildDrawingCache(true);
-            mBackground = mBackgroundView.getDrawingCache(true);
+//            mBackground = mBackgroundView.getDrawingCache(true);
+            mBackground = Bitmap.createBitmap(mBackgroundView.getDrawingCache(true));
 
             /**
              * After rotation, the DecorView has no height and no width. Therefore
              * .getDrawingCache() return null. That's why we  have to force measure and layout.
              */
-            if (mBackground == null) {
+            if (mBackground == null ||mBackground.isRecycled()) {
                 mBackgroundView.measure(
                     View.MeasureSpec.makeMeasureSpec(rect.width(), View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(rect.height(), View.MeasureSpec.EXACTLY)
@@ -556,22 +557,33 @@ public class BlurDialogEngine {
                 mBackgroundView.destroyDrawingCache();
                 mBackgroundView.setDrawingCacheEnabled(true);
                 mBackgroundView.buildDrawingCache(true);
-                mBackground = mBackgroundView.getDrawingCache(true);
+//                mBackground = mBackgroundView.getDrawingCache(true);
+                mBackground =Bitmap.createBitmap(mBackgroundView.getDrawingCache(true));
             }
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             //process to the blue
-            if (!isCancelled()) {
-                blur(mBackground, mBackgroundView);
+//            if (!isCancelled()) {
+//                blur(mBackground, mBackgroundView);
+            if (!isCancelled()&& mBackground!=null) {
+//                synchronized (object) {
+                if (!mBackground.isRecycled()) {
+                    blur(mBackground, mBackgroundView);
+                }else{
+                    if(mDebugEnable) {
+                        Log.e(TAG, "blur an recyled bitmap");
+                    }
+                    return null;
+                }
             } else {
                 return null;
             }
             //clear memory
-            mBackground.recycle();
-            mBackgroundView.destroyDrawingCache();
-            mBackgroundView.setDrawingCacheEnabled(false);
+//            mBackground.recycle();
+//            mBackgroundView.destroyDrawingCache();
+//            mBackgroundView.setDrawingCacheEnabled(false);
             return null;
         }
 
@@ -580,20 +592,27 @@ public class BlurDialogEngine {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            mHoldingActivity.getWindow().addContentView(
-                mBlurredBackgroundView,
-                mBlurredBackgroundLayoutParams
-            );
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                mBlurredBackgroundView.setAlpha(0f);
-                mBlurredBackgroundView
-                    .animate()
-                    .alpha(1f)
-                    .setDuration(mAnimationDuration)
-                    .setInterpolator(new LinearInterpolator())
-                    .start();
+            if(mBlurredBackgroundView!=null) {
+                mHoldingActivity.getWindow().addContentView(
+                        mBlurredBackgroundView,
+                        mBlurredBackgroundLayoutParams
+                );
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                    mBlurredBackgroundView.setAlpha(0f);
+                    mBlurredBackgroundView
+                            .animate()
+                            .alpha(1f)
+                            .setDuration(mAnimationDuration)
+                            .setInterpolator(new LinearInterpolator())
+                            .start();
+                }
             }
+            //clear memory
+            if(mBackground!=null) {
+                mBackground.recycle();
+            }
+            mBackgroundView.destroyDrawingCache();
+            mBackgroundView.setDrawingCacheEnabled(false);
             mBackgroundView = null;
             mBackground = null;
         }
