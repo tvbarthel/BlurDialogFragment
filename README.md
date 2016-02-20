@@ -31,7 +31,7 @@ Gradle dependency
 =======
 Since the library is promoted on maven central, just add a new gradle dependency :
 
-```java
+```groovy
 compile 'fr.tvbarthel.blurdialogfragment:lib:2.1.5'
 ```
 
@@ -50,7 +50,7 @@ Use RenderScript in Your Project
 
 Simply add this line to your build.gradle
 
-```
+```groovy
 defaultConfig {
     ...
     renderscriptTargetApi 22
