@@ -13,4 +13,6 @@
     <!-- xml in comments recognized as wrong HTML !-->
     <suppress checks="JavadocStyleCheck" files="SupportBlurDialogFragment"/>
     <suppress checks="JavadocStyleCheck" files="BlurDialogFragment"/>
+
+    <suppress checks="FileLength" files="BlurDialogEngine"/>
 </suppressions>
