@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class SampleActionBarActivity extends AppCompatActivity implements View.OnClickListener {
+public class SampleActionBarActivity extends AppCompatActivity
+    implements View.OnClickListener, SampleSupportDialogFragment.Callback {
 
     /**
      * Seek bar used to change the blur radius.
@@ -122,6 +124,11 @@ public class SampleActionBarActivity extends AppCompatActivity implements View.O
         }
     }
 
+    @Override
+    public void onSampleDialogDismissed() {
+        Toast.makeText(this, "Dialog dismissed", Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Set up widgets.
      */
@@ -168,4 +175,5 @@ public class SampleActionBarActivity extends AppCompatActivity implements View.O
         mBlurRadiusSeekbar.setProgress(7);
         mDownScaleFactorSeekbar.setProgress(20);
     }
+
 }

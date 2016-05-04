@@ -3,6 +3,7 @@ package fr.tvbarthel.lib.blurdialogfragment.sample;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.method.LinkMovementMethod;
@@ -55,6 +56,17 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
     private boolean mUseRenderScript;
 
     /**
+     * Used when fragment isn't attached yet.
+     */
+    private static Callback sDummyCallback = new Callback() {
+        @Override
+        public void onSampleDialogDismissed() {
+
+        }
+    };
+    private Callback mCallback = sDummyCallback;
+
+    /**
      * Retrieve a new instance of the sample fragment.
      *
      * @param radius            blur radius.
@@ -74,28 +86,28 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         SampleSupportDialogFragment fragment = new SampleSupportDialogFragment();
         Bundle args = new Bundle();
         args.putInt(
-                BUNDLE_KEY_BLUR_RADIUS,
-                radius
+            BUNDLE_KEY_BLUR_RADIUS,
+            radius
         );
         args.putFloat(
-                BUNDLE_KEY_DOWN_SCALE_FACTOR,
-                downScaleFactor
+            BUNDLE_KEY_DOWN_SCALE_FACTOR,
+            downScaleFactor
         );
         args.putBoolean(
-                BUNDLE_KEY_DIMMING,
-                dimming
+            BUNDLE_KEY_DIMMING,
+            dimming
         );
         args.putBoolean(
-                BUNDLE_KEY_DEBUG,
-                debug
+            BUNDLE_KEY_DEBUG,
+            debug
         );
         args.putBoolean(
-                BUNDLE_KEY_BLURRED_ACTION_BAR,
-                mBlurredActionBar
+            BUNDLE_KEY_BLURRED_ACTION_BAR,
+            mBlurredActionBar
         );
         args.putBoolean(
-                BUNDLE_KEY_USE_RENDERSCRIPT,
-                useRenderScript
+            BUNDLE_KEY_USE_RENDERSCRIPT,
+            useRenderScript
         );
 
         fragment.setArguments(args);
@@ -114,6 +126,12 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         mDebug = args.getBoolean(BUNDLE_KEY_DEBUG);
         mBlurredActionBar = args.getBoolean(BUNDLE_KEY_BLURRED_ACTION_BAR);
         mUseRenderScript = args.getBoolean(BUNDLE_KEY_USE_RENDERSCRIPT);
+
+        if (!(activity instanceof Callback)) {
+            throw new IllegalStateException("Holding activity must implement fragment callback.");
+        }
+
+        mCallback = ((Callback) activity);
     }
 
     @Override
@@ -131,6 +149,18 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
         Linkify.addLinks(label, Linkify.WEB_URLS);
         builder.setView(view);
         return builder.create();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = sDummyCallback;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        mCallback.onSampleDialogDismissed();
     }
 
     @Override
@@ -161,5 +191,15 @@ public class SampleSupportDialogFragment extends SupportBlurDialogFragment {
     @Override
     protected boolean isRenderScriptEnable() {
         return mUseRenderScript;
+    }
+
+    /**
+     * Callback used to catch dialog events.
+     */
+    public interface Callback {
+        /**
+         * Called when the sample dialog is dismissed.
+         */
+        void onSampleDialogDismissed();
     }
 }
