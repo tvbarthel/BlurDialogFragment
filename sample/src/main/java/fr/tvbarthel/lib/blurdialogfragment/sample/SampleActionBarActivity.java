@@ -2,7 +2,6 @@ package fr.tvbarthel.lib.blurdialogfragment.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,13 +106,13 @@ public class SampleActionBarActivity extends AppCompatActivity implements View.O
         switch (v.getId()) {
             case R.id.button:
                 SampleSupportDialogFragment fragment
-                        = SampleSupportDialogFragment.newInstance(
-                        mBlurRadiusSeekbar.getProgress() + 1,
-                        (mDownScaleFactorSeekbar.getProgress() / 10f) + 2,
-                        mDimmingEnable.isChecked(),
-                        mDebugMode.isChecked(),
-                        mBlurredActionBar.isChecked(),
-                        mUseRenderScript.isChecked()
+                    = SampleSupportDialogFragment.newInstance(
+                    mBlurRadiusSeekbar.getProgress() + 1,
+                    (mDownScaleFactorSeekbar.getProgress() / 10f) + 2,
+                    mDimmingEnable.isChecked(),
+                    mDebugMode.isChecked(),
+                    mBlurredActionBar.isChecked(),
+                    mUseRenderScript.isChecked()
                 );
                 fragment.show(getSupportFragmentManager(), "blur_sample");
                 break;

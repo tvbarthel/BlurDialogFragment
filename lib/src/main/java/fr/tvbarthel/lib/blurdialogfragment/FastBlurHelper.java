@@ -48,7 +48,10 @@ final class FastBlurHelper {
         // created Feburary 29, 2004
         // Android port : Yahel Bouaziz <yahel at kayenko.com>
         // http://www.kayenko.com
-        // ported april 5th, 2012
+        // ported April 5th, 2012
+        // Single buffer tweak by Thomas Barthelemy <thomas.barthelemy.utc at gmail.com>
+        // http://tvbarthel.fr/
+        // modified April 27th, 2016
 
         // This is a compromise between Gaussian Blur and Box blur
         // It creates much better looking blurs than Box Blur, but is
@@ -76,12 +79,9 @@ final class FastBlurHelper {
 
         int wm = w - 1;
         int hm = h - 1;
-        int wh = w * h;
         int div = radius + radius + 1;
 
-        int r[] = new int[wh];
-        int g[] = new int[wh];
-        int b[] = new int[wh];
+        int px = 0;
         int rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
         int vmin[] = new int[Math.max(w, h)];
 
@@ -129,9 +129,7 @@ final class FastBlurHelper {
 
             for (x = 0; x < w; x++) {
 
-                r[yi] = dv[rsum];
-                g[yi] = dv[gsum];
-                b[yi] = dv[bsum];
+                pix[yi] = (0xff000000 & pix[yi]) | (dv[rsum] << 16) | (dv[gsum] << 8) | dv[bsum];
 
                 rsum -= routsum;
                 gsum -= goutsum;
@@ -147,6 +145,7 @@ final class FastBlurHelper {
                 if (y == 0) {
                     vmin[x] = Math.min(x + radius + 1, wm);
                 }
+
                 p = pix[yw + vmin[x]];
 
                 sir[0] = (p & 0xff0000) >> 16;
@@ -184,15 +183,17 @@ final class FastBlurHelper {
 
                 sir = stack[i + radius];
 
-                sir[0] = r[yi];
-                sir[1] = g[yi];
-                sir[2] = b[yi];
+                px = pix[yi];
+
+                sir[0] = (px & 0xff0000) >> 16;
+                sir[1] = (px & 0x00ff00) >> 8;
+                sir[2] = (px & 0x0000ff);
 
                 rbs = r1 - Math.abs(i);
 
-                rsum += r[yi] * rbs;
-                gsum += g[yi] * rbs;
-                bsum += b[yi] * rbs;
+                rsum += sir[0] * rbs;
+                gsum += sir[1] * rbs;
+                bsum += sir[2] * rbs;
 
                 if (i > 0) {
                     rinsum += sir[0];
@@ -230,9 +231,11 @@ final class FastBlurHelper {
                 }
                 p = x + vmin[y];
 
-                sir[0] = r[p];
-                sir[1] = g[p];
-                sir[2] = b[p];
+                px = pix[p];
+
+                sir[0] = (px & 0xff0000) >> 16;
+                sir[1] = (px & 0x00ff00) >> 8;
+                sir[2] = (px & 0x0000ff);
 
                 rinsum += sir[0];
                 ginsum += sir[1];

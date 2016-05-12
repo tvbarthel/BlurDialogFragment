@@ -1,6 +1,7 @@
 package fr.tvbarthel.lib.blurdialogfragment;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -31,6 +32,14 @@ public abstract class BlurDialogFragment extends DialogFragment {
      * Dimming policy.
      */
     private boolean mDimmingEffect;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (mBlurEngine != null) {
+            mBlurEngine.onAttach(activity); // re attached
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +86,7 @@ public abstract class BlurDialogFragment extends DialogFragment {
             int currentAnimation = dialog.getWindow().getAttributes().windowAnimations;
             if (currentAnimation == 0) {
                 dialog.getWindow().getAttributes().windowAnimations
-                        = R.style.BlurDialogFragment_Default_Animation;
+                    = R.style.BlurDialogFragment_Default_Animation;
             }
         }
         super.onStart();
@@ -97,9 +106,9 @@ public abstract class BlurDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mBlurEngine.onDestroy();
+    public void onDetach() {
+        super.onDetach();
+        mBlurEngine.onDetach();
     }
 
     @Override

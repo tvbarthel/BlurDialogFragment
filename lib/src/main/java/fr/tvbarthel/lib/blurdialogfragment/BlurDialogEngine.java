@@ -25,6 +25,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -146,14 +147,32 @@ public class BlurDialogEngine {
     }
 
     /**
+     * Must be linked to the original lifecycle.
+     *
+     * @param activity holding activity.
+     */
+    public void onAttach(Activity activity) {
+        mHoldingActivity = activity;
+    }
+
+
+    /**
      * Resume the engine.
      *
      * @param retainedInstance use getRetainInstance.
      */
     public void onResume(boolean retainedInstance) {
         if (mBlurredBackgroundView == null || retainedInstance) {
-            mBluringTask = new BlurAsyncTask();
-            mBluringTask.execute();
+            mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
+                        mBluringTask = new BlurAsyncTask();
+                        mBluringTask.execute();
+                        return false;
+                    }
+                });
         }
     }
 
@@ -197,7 +216,7 @@ public class BlurDialogEngine {
     /**
      * Must be linked to the original lifecycle.
      */
-    public void onDestroy() {
+    public void onDetach() {
         if (mBluringTask != null) {
             mBluringTask.cancel(true);
         }
@@ -268,7 +287,6 @@ public class BlurDialogEngine {
      *
      * @param useRenderScript use of RenderScript
      */
-
     public void setUseRenderScript(boolean useRenderScript) {
         mUseRenderScript = useRenderScript;
     }
@@ -570,8 +588,6 @@ public class BlurDialogEngine {
             }
             //clear memory
             mBackground.recycle();
-            mBackgroundView.destroyDrawingCache();
-            mBackgroundView.setDrawingCacheEnabled(false);
             return null;
         }
 
@@ -579,6 +595,9 @@ public class BlurDialogEngine {
         @SuppressLint("NewApi")
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            mBackgroundView.destroyDrawingCache();
+            mBackgroundView.setDrawingCacheEnabled(false);
 
             mHoldingActivity.getWindow().addContentView(
                 mBlurredBackgroundView,
