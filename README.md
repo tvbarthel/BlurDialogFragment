@@ -32,7 +32,7 @@ Gradle dependency
 Since the library is promoted on maven central, just add a new gradle dependency :
 
 ```groovy
-    compile 'fr.tvbarthel.blurdialogfragment:lib:2.1.6'
+    compile 'fr.tvbarthel.blurdialogfragment:lib:2.2.0'
 ```
 
 Don't forget to check the [Use RenderScript in Your Project] (#use-renderscript-in-your-project) if you're planning to use it.
@@ -287,6 +287,7 @@ Find more information on the [memory trace](http://tvbarthel.github.io/blur-dial
 
 Change logs
 =======
+* 2.2.0 : Fix preDrawListener registration when there was no certitude that onPreDraw will be called thanks to [Serkan Modoğlu](https://github.com/sekomod) and [Mark Mooibroek](https://github.com/markmooibroek) reports.
 * 2.1.6 : Fix orientation change as well as retainInstance thanks to [IskuhiSargsyan](https://github.com/IskuhiSargsyan) report and tweak FastBlur implementation to avoid the allocation of 3 additional arrays for RGB channels thanks to [sh1](https://disqus.com/by/sh1sh1sh1/) feedback.
 * 2.1.5 : Minor fixes thanks to [Edward S](https://github.com/edward-s) and [Tommy Chan](https://github.com/tommytcchan).
 * 2.1.4 : Fix NPE during the blurring process thanks to [Anth06ny](https://github.com/Anth06ny), [jacobtabak](https://github.com/jacobtabak) and [serega2593](https://github.com/serega2593) reports.

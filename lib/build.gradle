@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 apply from: '../config/quality.gradle'
 
 group ='fr.tvbarthel.blurdialogfragment'
-version = '2.1.6'
+version = '2.2.0'
 
 
 android {
@@ -104,6 +104,7 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError = false
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

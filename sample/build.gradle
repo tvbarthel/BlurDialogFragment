@@ -8,8 +8,8 @@ android {
         applicationId "fr.tvbarthel.lib.blurdialogfragment.sample"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 8
-        versionName "1.7"
+        versionCode 9
+        versionName "1.8"
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
     }
