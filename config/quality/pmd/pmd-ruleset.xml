@@ -10,10 +10,6 @@
     <exclude-pattern>.*/gen/.*</exclude-pattern>
 
     <rule ref="rulesets/java/android.xml">
-        <!-- Config.LOGD deprecated in API level 4 !-->
-        <exclude name="ProtectLogD" />
-        <!-- Config.LOGV deprecated in API level 4 !-->
-        <exclude name="ProtectLogV" />
         <!-- Exclude since Engine has onCreate|onResume|onDismiss methods which can't call any super.X() !-->
         <exclude name="CallSuperFirst" />
         <exclude name="CallSuperLast" />
@@ -28,7 +24,6 @@
     <rule ref="rulesets/java/naming.xml">
         <exclude name="AbstractNaming" />
         <exclude name="LongVariable" />
-        <exclude name="LongMethodName" />
         <exclude name="ShortMethodName" />
         <exclude name="ShortVariable" />
         <exclude name="VariableNamingConventions" />

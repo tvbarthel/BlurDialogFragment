@@ -98,7 +98,6 @@ public abstract class BlurDialogFragment extends DialogFragment {
         mBlurEngine.onResume(getRetainInstance());
     }
 
-
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);

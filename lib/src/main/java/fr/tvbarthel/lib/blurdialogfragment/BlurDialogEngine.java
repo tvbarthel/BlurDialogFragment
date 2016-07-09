@@ -135,7 +135,6 @@ public class BlurDialogEngine {
      */
     private boolean mUseRenderScript;
 
-
     /**
      * Constructor.
      *
@@ -155,7 +154,6 @@ public class BlurDialogEngine {
         mHoldingActivity = activity;
     }
 
-
     /**
      * Resume the engine.
      *
@@ -163,16 +161,26 @@ public class BlurDialogEngine {
      */
     public void onResume(boolean retainedInstance) {
         if (mBlurredBackgroundView == null || retainedInstance) {
-            mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(
-                new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().removeOnPreDrawListener(this);
-                        mBluringTask = new BlurAsyncTask();
-                        mBluringTask.execute();
-                        return false;
+            if (mHoldingActivity.getWindow().getDecorView().isShown()) {
+                mBluringTask = new BlurAsyncTask();
+                mBluringTask.execute();
+            } else {
+                mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(
+                    new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            // dialog can have been closed before being drawn
+                            if (mHoldingActivity != null) {
+                                mHoldingActivity.getWindow().getDecorView()
+                                    .getViewTreeObserver().removeOnPreDrawListener(this);
+                                mBluringTask = new BlurAsyncTask();
+                                mBluringTask.execute();
+                            }
+                            return true;
+                        }
                     }
-                });
+                );
+            }
         }
     }
 
