@@ -201,7 +201,6 @@ public class SampleDialogFragment extends MyCustomDialogFragment {
         super.onCreate(savedInstanceState);
         
         mBlurEngine = new BlurDialogEngine(getActivity());
-        mBlurEngine.debug(mDebugEnable);
         mBlurEngine.setBlurRadius(8);
         mBlurEngine.setDownScaleFactor(8f);
         mBlurEngine.debug(true);
@@ -224,7 +223,7 @@ public class SampleDialogFragment extends MyCustomDialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mBlurEngine.onDestroy();
+        mBlurEngine.onDetach();
     }
 
     @Override
