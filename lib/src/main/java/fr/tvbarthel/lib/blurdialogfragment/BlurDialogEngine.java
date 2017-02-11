@@ -12,8 +12,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
@@ -166,19 +166,19 @@ public class BlurDialogEngine {
                 mBluringTask.execute();
             } else {
                 mHoldingActivity.getWindow().getDecorView().getViewTreeObserver().addOnPreDrawListener(
-                    new ViewTreeObserver.OnPreDrawListener() {
-                        @Override
-                        public boolean onPreDraw() {
-                            // dialog can have been closed before being drawn
-                            if (mHoldingActivity != null) {
-                                mHoldingActivity.getWindow().getDecorView()
-                                    .getViewTreeObserver().removeOnPreDrawListener(this);
-                                mBluringTask = new BlurAsyncTask();
-                                mBluringTask.execute();
+                        new ViewTreeObserver.OnPreDrawListener() {
+                            @Override
+                            public boolean onPreDraw() {
+                                // dialog can have been closed before being drawn
+                                if (mHoldingActivity != null) {
+                                    mHoldingActivity.getWindow().getDecorView()
+                                            .getViewTreeObserver().removeOnPreDrawListener(this);
+                                    mBluringTask = new BlurAsyncTask();
+                                    mBluringTask.execute();
+                                }
+                                return true;
                             }
-                            return true;
                         }
-                    }
                 );
             }
         }
@@ -198,23 +198,23 @@ public class BlurDialogEngine {
         if (mBlurredBackgroundView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 mBlurredBackgroundView
-                    .animate()
-                    .alpha(0f)
-                    .setDuration(mAnimationDuration)
-                    .setInterpolator(new AccelerateInterpolator())
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            removeBlurredView();
-                        }
+                        .animate()
+                        .alpha(0f)
+                        .setDuration(mAnimationDuration)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                removeBlurredView();
+                            }
 
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                            super.onAnimationCancel(animation);
-                            removeBlurredView();
-                        }
-                    }).start();
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                super.onAnimationCancel(animation);
+                                removeBlurredView();
+                            }
+                        }).start();
             } else {
                 removeBlurredView();
             }
@@ -322,21 +322,16 @@ public class BlurDialogEngine {
     /**
      * Blur the given bitmap and add it to the activity.
      *
-     * @param bkg  should be a bitmap of the background.
-     * @param view background view.
+     * @param bkg should be a bitmap of the background.
      */
-    private void blur(Bitmap bkg, View view) {
+    private void blur(Bitmap bkg) {
         long startMs = System.currentTimeMillis();
         //define layout params to the previous imageView in order to match its parent
         mBlurredBackgroundLayoutParams = new FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
         );
 
-        //overlay used to build scaled preview and blur background
-        Bitmap overlay = null;
-
-        //evaluate top offset due to action bar, 0 if the actionBar should be blurred.
         int actionBarHeight;
         if (mBlurredActionBar) {
             actionBarHeight = 0;
@@ -344,57 +339,10 @@ public class BlurDialogEngine {
             actionBarHeight = getActionBarHeight();
         }
 
-        //evaluate top offset due to status bar
-        int statusBarHeight = 0;
-        if ((mHoldingActivity.getWindow().getAttributes().flags
-            & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0) {
-            //not in fullscreen mode
-            statusBarHeight = getStatusBarHeight();
-        }
-
-        // check if status bar is translucent to remove status bar offset in order to provide blur
-        // on content bellow the status.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-            && isStatusBarTranslucent()) {
-            statusBarHeight = 0;
-        }
-
-        final int topOffset = actionBarHeight + statusBarHeight;
-        // evaluate bottom or right offset due to navigation bar.
-        int bottomOffset = 0;
-        int rightOffset = 0;
-        final int navBarSize = getNavigationBarOffset();
-
-        if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
-            bottomOffset = navBarSize;
-        } else {
-            rightOffset = navBarSize;
-        }
-
-        //add offset to the source boundaries since we don't want to blur actionBar pixels
-        Rect srcRect = new Rect(
-            0,
-            topOffset,
-            bkg.getWidth() - rightOffset,
-            bkg.getHeight() - bottomOffset
-        );
-
-        //in order to keep the same ratio as the one which will be used for rendering, also
-        //add the offset to the overlay.
-        double height = Math.ceil((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
-        double width = Math.ceil(((view.getWidth() - rightOffset) * height
-            / (view.getHeight() - topOffset - bottomOffset)));
-
-        // Render script doesn't work with RGB_565
-        if (mUseRenderScript) {
-            overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
-        } else {
-            overlay = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.RGB_565);
-        }
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-                || mHoldingActivity instanceof ActionBarActivity
-                || mHoldingActivity instanceof AppCompatActivity) {
+                    || mHoldingActivity instanceof ActionBarActivity
+                    || mHoldingActivity instanceof AppCompatActivity) {
                 //add offset as top margin since actionBar height must also considered when we display
                 // the blurred background. Don't want to draw on the actionBar.
                 mBlurredBackgroundLayoutParams.setMargins(0, actionBarHeight, 0, 0);
@@ -404,44 +352,55 @@ public class BlurDialogEngine {
             // no dependency to appcompat, that means no additional top offset due to actionBar.
             mBlurredBackgroundLayoutParams.setMargins(0, 0, 0, 0);
         }
-        //scale and draw background view on the canvas overlay
-        Canvas canvas = new Canvas(overlay);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
 
-        //build drawing destination boundaries
-        final RectF destRect = new RectF(0, 0, overlay.getWidth(), overlay.getHeight());
-
-        //draw background from source area in source background to the destination area on the overlay
-        canvas.drawBitmap(bkg, srcRect, destRect, paint);
-
+        final Bitmap blurredBackground;
         //apply fast blur on overlay
         if (mUseRenderScript) {
-            overlay = RenderScriptBlurHelper.doBlur(overlay, mBlurRadius, true, mHoldingActivity);
+            blurredBackground = RenderScriptBlurHelper.doBlur(bkg, mBlurRadius, true, mHoldingActivity);
         } else {
-            overlay = FastBlurHelper.doBlur(overlay, mBlurRadius, true);
+            blurredBackground = FastBlurHelper.doBlur(bkg, mBlurRadius, true);
         }
+
+        if (blurredBackground == null) {
+            if (mDebugEnable) {
+                Log.e(TAG, "blur failed");
+            }
+            return;
+        }
+
         if (mDebugEnable) {
             String blurTime = (System.currentTimeMillis() - startMs) + " ms";
             Log.d(TAG, "Blur method : " + (mUseRenderScript ? "RenderScript" : "FastBlur"));
             Log.d(TAG, "Radius : " + mBlurRadius);
             Log.d(TAG, "Down Scale Factor : " + mDownScaleFactor);
             Log.d(TAG, "Blurred achieved in : " + blurTime);
-            Log.d(TAG, "Allocation : " + bkg.getRowBytes() + "ko (screen capture) + "
-                + overlay.getRowBytes() + "ko (blurred bitmap)"
-                + (!mUseRenderScript ? " + temp buff " + overlay.getRowBytes() + "ko." : "."));
+
+            if (blurredBackground == bkg) {
+                Log.d(TAG, "Allocation: " + getByteCount(bkg) + " bytes (single bitmap used for capture and blur)");
+            } else {
+                Log.d(TAG, "Allocation: " + getByteCount(bkg) + " bytes (screen capture) + "
+                        + getByteCount(blurredBackground) + " bytes (blur)");
+            }
+
+            if (!mUseRenderScript) {
+                // The Fast blue helper uses an internal int array[height * width]
+                final int internalIntArrayByteCount = bkg.getHeight() * bkg.getWidth() * 4;
+                Log.d(TAG, "Allocation: " + internalIntArrayByteCount + " bytes (internal temp buff)");
+            }
+
             Rect bounds = new Rect();
-            Canvas canvas1 = new Canvas(overlay);
+            Canvas canvas = new Canvas(blurredBackground);
+            Paint paint = new Paint();
             paint.setColor(Color.BLACK);
             paint.setAntiAlias(true);
             paint.setTextSize(20.0f);
             paint.getTextBounds(blurTime, 0, blurTime.length(), bounds);
-            canvas1.drawText(blurTime, 2, bounds.height(), paint);
+            canvas.drawText(blurTime, 2, bounds.height(), paint);
         }
         //set bitmap in an image view for final rendering
         mBlurredBackgroundView = new ImageView(mHoldingActivity);
         mBlurredBackgroundView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), overlay));
+        mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), blurredBackground));
     }
 
     /**
@@ -457,13 +416,13 @@ public class BlurDialogEngine {
                 actionBarHeight = mToolbar.getHeight();
             } else if (mHoldingActivity instanceof ActionBarActivity) {
                 ActionBar supportActionBar
-                    = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
+                        = ((ActionBarActivity) mHoldingActivity).getSupportActionBar();
                 if (supportActionBar != null) {
                     actionBarHeight = supportActionBar.getHeight();
                 }
             } else if (mHoldingActivity instanceof AppCompatActivity) {
                 ActionBar supportActionBar
-                    = ((AppCompatActivity) mHoldingActivity).getSupportActionBar();
+                        = ((AppCompatActivity) mHoldingActivity).getSupportActionBar();
                 if (supportActionBar != null) {
                     actionBarHeight = supportActionBar.getHeight();
                 }
@@ -492,7 +451,7 @@ public class BlurDialogEngine {
     private int getStatusBarHeight() {
         int result = 0;
         int resourceId = mHoldingActivity.getResources()
-            .getIdentifier("status_bar_height", "dimen", "android");
+                .getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = mHoldingActivity.getResources().getDimensionPixelSize(resourceId);
         }
@@ -540,7 +499,53 @@ public class BlurDialogEngine {
             if (parent != null) {
                 parent.removeView(mBlurredBackgroundView);
             }
+            final Drawable drawable = mBlurredBackgroundView.getDrawable();
+            if (drawable instanceof BitmapDrawable) {
+                ((BitmapDrawable) drawable).getBitmap().recycle();
+            }
             mBlurredBackgroundView = null;
+        }
+    }
+
+    /**
+     * Return the number of bytes used by the a {@link Bitmap}.
+     *
+     * @param bitmap a {@link Bitmap}.
+     * @return the number of bytes.
+     */
+    private int getByteCount(Bitmap bitmap) {
+        if (bitmap == null) {
+            return 0;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getByteCount();
+        } else {
+            final int bytePerPixel = getBytePerPixel(bitmap.getConfig());
+            final int numberOfPixels = bitmap.getWidth() * bitmap.getHeight();
+            return bytePerPixel * numberOfPixels;
+        }
+    }
+
+    /**
+     * Get the number of bytes used to store one pixel.
+     *
+     * @param config a {@link android.graphics.Bitmap.Config}.
+     * @return the number of bytes used for storing one pixel.
+     */
+    private int getBytePerPixel(Bitmap.Config config) {
+        if (config == Bitmap.Config.ALPHA_8) {
+            return 1;
+        } else if (config == Bitmap.Config.RGB_565) {
+            return 2;
+        } else if (config == Bitmap.Config.ARGB_4444) {
+            return 2;
+        } else if (config == Bitmap.Config.ARGB_8888) {
+            return 4;
+        } else {
+            return 0;
         }
     }
 
@@ -558,44 +563,100 @@ public class BlurDialogEngine {
 
             mBackgroundView = mHoldingActivity.getWindow().getDecorView();
 
-            //retrieve background view, must be achieved on ui thread since
-            //only the original thread that created a view hierarchy can touch its views.
-
-            Rect rect = new Rect();
-            mBackgroundView.getWindowVisibleDisplayFrame(rect);
-            mBackgroundView.destroyDrawingCache();
-            mBackgroundView.setDrawingCacheEnabled(true);
-            mBackgroundView.buildDrawingCache(true);
-            mBackground = mBackgroundView.getDrawingCache(true);
-
-            /**
-             * After rotation, the DecorView has no height and no width. Therefore
-             * .getDrawingCache() return null. That's why we  have to force measure and layout.
-             */
-            if (mBackground == null) {
+            if (mBackgroundView.getMeasuredHeight() == 0
+                    && mBackgroundView.getMeasuredWidth() == 0) {
+                final Rect rect = new Rect();
+                mBackgroundView.getWindowVisibleDisplayFrame(rect);
                 mBackgroundView.measure(
-                    View.MeasureSpec.makeMeasureSpec(rect.width(), View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(rect.height(), View.MeasureSpec.EXACTLY)
+                        View.MeasureSpec.makeMeasureSpec(rect.width(), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(rect.height(), View.MeasureSpec.EXACTLY)
                 );
-                mBackgroundView.layout(0, 0, mBackgroundView.getMeasuredWidth(),
-                    mBackgroundView.getMeasuredHeight());
-                mBackgroundView.destroyDrawingCache();
-                mBackgroundView.setDrawingCacheEnabled(true);
-                mBackgroundView.buildDrawingCache(true);
-                mBackground = mBackgroundView.getDrawingCache(true);
+
+                mBackgroundView.layout(
+                        0,
+                        0,
+                        mBackgroundView.getMeasuredWidth(),
+                        mBackgroundView.getMeasuredHeight());
             }
+
+            mBackground = buildBackgroundBitmap(mBackgroundView);
+        }
+
+        /**
+         * Build the the background bitmap of a view.
+         * <p>
+         * Highly inspired by {@link View#buildDrawingCache()}.
+         *
+         * @param view the {@link View}.
+         * @return a {@link Bitmap}.
+         */
+        private Bitmap buildBackgroundBitmap(View view) {
+            //evaluate top offset due to action bar, 0 if the actionBar should be blurred.
+            int actionBarHeight;
+            if (mBlurredActionBar) {
+                actionBarHeight = 0;
+            } else {
+                actionBarHeight = getActionBarHeight();
+            }
+
+            //evaluate top offset due to status bar
+            int statusBarHeight = 0;
+            if ((mHoldingActivity.getWindow().getAttributes().flags
+                    & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0) {
+                //not in fullscreen mode
+                statusBarHeight = getStatusBarHeight();
+            }
+
+            // check if status bar is translucent to remove status bar offset in order to provide blur
+            // on content bellow the status.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                    && isStatusBarTranslucent()) {
+                statusBarHeight = 0;
+            }
+
+            final int topOffset = actionBarHeight + statusBarHeight;
+            // evaluate bottom or right offset due to navigation bar.
+            int bottomOffset = 0;
+            int rightOffset = 0;
+            final int navBarSize = getNavigationBarOffset();
+
+            if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
+                bottomOffset = navBarSize;
+            } else {
+                rightOffset = navBarSize;
+            }
+
+            final double height = Math.floor((view.getHeight() - topOffset - bottomOffset) / mDownScaleFactor);
+            final double width = Math.floor((view.getWidth() - rightOffset) / mDownScaleFactor);
+
+            final Bitmap bitmap;
+            if (mUseRenderScript) {
+                bitmap = Bitmap.createBitmap((int) (width), (int) (height), Bitmap.Config.ARGB_8888);
+            } else {
+                bitmap = Bitmap.createBitmap((int) (width), (int) (height), Bitmap.Config.RGB_565);
+            }
+
+            view.computeScroll();
+
+            final Canvas canvas = new Canvas(bitmap);
+            final int restoreCount = canvas.save();
+            canvas.scale(1 / mDownScaleFactor, 1 / mDownScaleFactor);
+            canvas.translate(-view.getScrollX(), -view.getScrollY() - topOffset);
+            view.draw(canvas);
+            canvas.restoreToCount(restoreCount);
+            canvas.setBitmap(null);
+
+            return bitmap;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            //process to the blue
             if (!isCancelled()) {
-                blur(mBackground, mBackgroundView);
+                blur(mBackground);
             } else {
-                return null;
+                mBackground.recycle();
+                mBackground = null;
             }
-            //clear memory
-            mBackground.recycle();
             return null;
         }
 
@@ -603,23 +664,19 @@ public class BlurDialogEngine {
         @SuppressLint("NewApi")
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            mBackgroundView.destroyDrawingCache();
-            mBackgroundView.setDrawingCacheEnabled(false);
-
             mHoldingActivity.getWindow().addContentView(
-                mBlurredBackgroundView,
-                mBlurredBackgroundLayoutParams
+                    mBlurredBackgroundView,
+                    mBlurredBackgroundLayoutParams
             );
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
                 mBlurredBackgroundView.setAlpha(0f);
                 mBlurredBackgroundView
-                    .animate()
-                    .alpha(1f)
-                    .setDuration(mAnimationDuration)
-                    .setInterpolator(new LinearInterpolator())
-                    .start();
+                        .animate()
+                        .alpha(1f)
+                        .setDuration(mAnimationDuration)
+                        .setInterpolator(new LinearInterpolator())
+                        .start();
             }
             mBackgroundView = null;
             mBackground = null;
