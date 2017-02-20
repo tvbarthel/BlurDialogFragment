@@ -356,9 +356,9 @@ public class BlurDialogEngine {
         final Bitmap blurredBackground;
         //apply fast blur on overlay
         if (mUseRenderScript) {
-            blurredBackground = RenderScriptBlurHelper.doBlur(bkg, mBlurRadius, true, mHoldingActivity);
+            blurredBackground = RenderScriptBlurHelper.doBlur(bkg, mBlurRadius, mHoldingActivity);
         } else {
-            blurredBackground = FastBlurHelper.doBlur(bkg, mBlurRadius, true);
+            blurredBackground = FastBlurHelper.doBlur(bkg, mBlurRadius);
         }
 
         if (blurredBackground == null) {

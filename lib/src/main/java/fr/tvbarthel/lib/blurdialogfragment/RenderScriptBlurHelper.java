@@ -31,18 +31,11 @@ final class RenderScriptBlurHelper {
      *
      * @param sentBitmap       bitmap to blur
      * @param radius           blur radius
-     * @param canReuseInBitmap true if bitmap must be reused without blur
      * @param context          used by RenderScript, can be null if RenderScript disabled
      * @return blurred bitmap
      */
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, Context context) {
-        Bitmap bitmap;
-
-        if (canReuseInBitmap) {
-            bitmap = sentBitmap;
-        } else {
-            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-        }
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius, Context context) {
+        Bitmap bitmap = sentBitmap;
 
         if (bitmap.getConfig() == Bitmap.Config.RGB_565) {
             // RenderScript hates RGB_565 so we convert it to ARGB_8888

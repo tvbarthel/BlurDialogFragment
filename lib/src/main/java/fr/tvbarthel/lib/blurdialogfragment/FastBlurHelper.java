@@ -20,25 +20,13 @@ final class FastBlurHelper {
      *
      * @param sentBitmap       bitmap to blur
      * @param radius           blur radius
-     * @param canReuseInBitmap true if bitmap must be reused without blur
      * @return blurred bitmap
      */
     @SuppressLint("NewApi")
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
-
+    public static Bitmap doBlur(Bitmap sentBitmap, int radius) {
         if (radius < 1) {
             return (null);
         }
-
-        Bitmap bitmap;
-        if (canReuseInBitmap || (sentBitmap.getConfig() == Bitmap.Config.RGB_565)) {
-            // if RenderScript is used and bitmap is in RGB_565, it will
-            // necessarily be copied when converting to ARGB_8888
-            bitmap = sentBitmap;
-        } else {
-            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-        }
-
 
         // Stack Blur v1.0 from
         // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
@@ -71,11 +59,11 @@ final class FastBlurHelper {
         //
         // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
 
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
+        int w = sentBitmap.getWidth();
+        int h = sentBitmap.getHeight();
 
         int[] pix = new int[w * h];
-        bitmap.getPixels(pix, 0, w, 0, 0, w, h);
+        sentBitmap.getPixels(pix, 0, w, 0, 0, w, h);
 
         int wm = w - 1;
         int hm = h - 1;
@@ -260,8 +248,8 @@ final class FastBlurHelper {
             }
         }
 
-        bitmap.setPixels(pix, 0, w, 0, 0, w, h);
+        sentBitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
-        return (bitmap);
+        return sentBitmap;
     }
 }
