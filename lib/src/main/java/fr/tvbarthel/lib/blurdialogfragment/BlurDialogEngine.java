@@ -589,7 +589,7 @@ public class BlurDialogEngine {
         @Override
         protected Void doInBackground(Void... params) {
             //process to the blue
-            if (!isCancelled()) {
+            if (!isCancelled() && !mBackground.isRecycled()) {
                 blur(mBackground, mBackgroundView);
             } else {
                 return null;
