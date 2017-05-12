@@ -23,7 +23,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -365,10 +368,12 @@ public class BlurDialogEngine {
         int rightOffset = 0;
         final int navBarSize = getNavigationBarOffset();
 
-        if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
-            bottomOffset = navBarSize;
-        } else {
-            rightOffset = navBarSize;
+        if (hasNavigationBar()) {
+            if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
+                bottomOffset = navBarSize;
+            } else {
+                rightOffset = navBarSize;
+            }
         }
 
         //add offset to the source boundaries since we don't want to blur actionBar pixels
@@ -442,6 +447,13 @@ public class BlurDialogEngine {
         mBlurredBackgroundView = new ImageView(mHoldingActivity);
         mBlurredBackgroundView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mBlurredBackgroundView.setImageDrawable(new BitmapDrawable(mHoldingActivity.getResources(), overlay));
+    }
+
+    private boolean hasNavigationBar() {
+        boolean hasMenuKey = ViewConfiguration.get(mHoldingActivity).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+
+        return !hasMenuKey && !hasBackKey;
     }
 
     /**
