@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -23,7 +24,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -363,7 +367,13 @@ public class BlurDialogEngine {
         // evaluate bottom or right offset due to navigation bar.
         int bottomOffset = 0;
         int rightOffset = 0;
-        final int navBarSize = getNavigationBarOffset();
+        int navBarSize = 0;
+
+        if (hasNavigationBar(mHoldingActivity)) {
+            navBarSize = getNavigationBarOffset();
+        } else {
+            navBarSize = 0;
+        }
 
         if (mHoldingActivity.getResources().getBoolean(R.bool.blur_dialog_has_bottom_navigation_bar)) {
             bottomOffset = navBarSize;
@@ -514,6 +524,23 @@ public class BlurDialogEngine {
             }
         }
         return result;
+    }
+
+    /**
+     * Check the device has navigation bar
+     * @param context
+     * @return boolean has navigation bar
+     */
+    boolean hasNavigationBar(Context context) {
+        Resources resources = context.getResources();
+        int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
+        if (id > 0) {
+            return resources.getBoolean(id);
+        } else {    // Check for keys
+            boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
+            boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+            return !hasMenuKey && !hasBackKey;
+        }
     }
 
     /**
