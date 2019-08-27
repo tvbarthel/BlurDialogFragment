@@ -572,6 +572,18 @@ public class BlurDialogEngine {
     }
 
     /**
+     * Removed the duplicated blurred view from the view hierarchy.
+     */
+    private void removedDuplicateBlurredView() {
+        if (mBlurredBackgroundView != null) {
+            ViewGroup parent = (ViewGroup) mBlurredBackgroundView.getParent();
+            if (parent != null) {
+                parent.removeView(mBlurredBackgroundView);
+            }
+        }
+    }
+
+    /**
      * Async task used to process blur out of ui thread
      */
     private class BlurAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -633,7 +645,7 @@ public class BlurDialogEngine {
 
             mBackgroundView.destroyDrawingCache();
             mBackgroundView.setDrawingCacheEnabled(false);
-            removeBlurredView();
+            removedDuplicateBlurredView();
             mHoldingActivity.getWindow().addContentView(
                 mBlurredBackgroundView,
                 mBlurredBackgroundLayoutParams
