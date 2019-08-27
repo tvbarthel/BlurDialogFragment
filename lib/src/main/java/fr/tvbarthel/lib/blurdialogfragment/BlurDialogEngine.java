@@ -633,7 +633,7 @@ public class BlurDialogEngine {
 
             mBackgroundView.destroyDrawingCache();
             mBackgroundView.setDrawingCacheEnabled(false);
-
+            removeBlurredView();
             mHoldingActivity.getWindow().addContentView(
                 mBlurredBackgroundView,
                 mBlurredBackgroundLayoutParams
